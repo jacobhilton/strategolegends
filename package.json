@@ -1,25 +1,18 @@
 {
   "name": "strategolegends",
-  "version": "0.1.2",
-  "description": "Stratego Legends",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku-examples/node-ws-test.git"
   },
   "dependencies": {
-    "express": "~4.9.x"
+    "express": "^4.4.5",
+    "ws": "0.4.x"
   },
   "engines": {
     "node": "0.10.x"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
-  },
-  "keywords": [
-    "node",
-    "heroku",
-    "express"
-  ],
-  "license": "MIT"
+  "scripts": {
+    "start": "node server.js"
+  }
 }

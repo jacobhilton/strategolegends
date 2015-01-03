@@ -5,7 +5,7 @@ var legendsconstructor=function(){
   var legendsproperties={
 
     "server":{
-      "socket":"http://192.168.1.76:3000",
+      "socket":"https://strategolegends.herokuapp.com:3000",
       "imagedirectory":"images/",
       "gameid":-1,
       "waitforreply":true,
