@@ -3,7 +3,7 @@ var app=express();
 app.set("port",(process.env.PORT||5000));
 app.use(express.static(__dirname+"/public"));
 var io=require("socket.io").listen(3000);
-var legendsconstructor=require("public/legends.js");
+var legendsconstructor=require("./public/legends.js");
 var games=[];
 io.sockets.on("connection",function(socket){
   socket.emit("gameslist",(function(){
