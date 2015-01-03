@@ -1,7 +1,7 @@
 var express=require("express");
 var app=express();
-app.set("port",(process.env.PORT||5000));
 app.use(express.static(__dirname+"/public"));
+app.listen(process.env.PORT||5000);
 var io=require("socket.io").listen(process.env.PORT||5000);
 var legendsconstructor=require("./public/legends.js");
 var games=[];
