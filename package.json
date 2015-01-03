@@ -1,6 +1,6 @@
 {
   "name": "strategolegends",
-  "version": "0.1",
+  "version": "0.1.2",
   "description": "Stratego Legends",
   "main": "server.js",
   "scripts": {
