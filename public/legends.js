@@ -7,9 +7,7 @@ var legendsconstructor=function(){
     "server":{
       "socket":"",
       "imagedirectory":"images/",
-      "gameid":-1,
-      "waitforreply":true,
-      "messagereceived":true
+      "waitforreply":true
     },
 
     "styles":{
@@ -21,19 +19,27 @@ var legendsconstructor=function(){
       "goodbordercolour":"#ffffff",
       "evilcolour":"black",
       "evilbordercolour":"#666666",
-      "bordersize":2,
-      "armypieceheight":57,
-      "armypiecewidth":38,
+      "bordersize":3,
+      "pieceshadow":"0px 0px 4px 4px #ffff00",
+      "shadowtimeout":2500,
+      "armypieceheight":51,
+      "armypiecewidth":34,
       "armypiecemarginsize":2,
       "armypieceborderradius":6,
       "pieceopacity":0.35,
-      "alttextwait":250,
+      "alttextthreshold":0.6,
+      "alttextwait":200,
+      "alttextfastwait":100,
+      "alttextmarginsize":{
+        "top":4,
+        "bottom":20
+      },
       "alttextcss":{
+        "font-family":"serif",
         "max-width":"400px",
         "background-color":"#ffff80",
         "border":"1px solid black",
-        "padding":"2px",
-        "margin":"16px 0px 0px 0px",
+        "padding":"4px"
       }
     },
 
@@ -275,6 +281,8 @@ var legendsconstructor=function(){
       {"name":"Plattenuis","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal Plattenuis(while on a plains space) to move a piece under your control adjcent to Plattenuis to any empty plains space.","colour":"purple","side":"evil","expansion":true}
     ],
 
+    "powers":["C","10","9","8","7","6","5","4","3","2","1","*"],
+
     "powerquantities":{
       "C":1,
       "10":1,
@@ -318,9 +326,7 @@ var legendsconstructor=function(){
 
     "armies":[],
 
-    "revealedarmynumber":-1,
-
-    "boardrotations":"default",
+    "gamedata":{},
 
     "boardrotate":function(dimension,multiple,x,y){
       if(multiple<0){
@@ -331,11 +337,11 @@ var legendsconstructor=function(){
         var boardwidth=legends.board.width;
         var boardheight=legends.board.height;
       }
-      return [x,y,boardwidth-1-x,boardheight-1-y][(((legends.boardrotations*multiple+(dimension=="x"?0:1))%4)+4)%4];
+      return [x,y,boardwidth-1-x,boardheight-1-y][(((legends.gamedata.boardrotations*multiple+(dimension=="x"?0:1))%4)+4)%4];
     },
 
     "getdisplayedboardsize":function(dimension){
-      return [legends.board.width,legends.board.height][(((legends.boardrotations+(dimension=="x"?0:1))%2)+2)%2];
+      return [legends.board.width,legends.board.height][(((legends.gamedata.boardrotations+(dimension=="x"?0:1))%2)+2)%2];
     },
 
     "getpieces":function(armycode,side){
@@ -430,7 +436,7 @@ var legendsconstructor=function(){
             var piecekey=piecesetup[square*16+c];
             var a=Math.floor(c/4);
             var b=c%4;
-            if(typeof(legends.board.tiles[x+a])=="undefined"){
+            if(!legends.board.tiles[x+a]){
               legends.board.tiles[x+a]=[];
             }
             if(piecekey){
@@ -451,7 +457,6 @@ var legendsconstructor=function(){
                 "alive":true,
                 "deathcurse":false,
                 "revealed":false
-                //,"highlighted":false
               };
             }
             else{
@@ -473,7 +478,7 @@ var legendsconstructor=function(){
       }
     },
 
-    "drawpiece":function(piece){
+    "drawpiece":function(piece,highlight){
       if(piece.alive&&(piece.deathcurse||(typeof(piece.x)=="number"&&typeof(piece.y)=="number"))){
         var numberofpiecesontile=(piece.deathcurse?legends.board.deathcurse:legends.board.tiles[piece.x][piece.y]).piecekeys.length;
         var tilemarginleft=legends.styles.tilesize-legends.styles.piecewidth-legends.styles.bordersize*2;
@@ -493,22 +498,44 @@ var legendsconstructor=function(){
           "z-index":(piece.z+1)+""
         });
       }
-      piece.boarddiv.css({
-        "display":piece.alive?"block":"none"
-      });
+      piece.boarddiv.toggle(piece.alive);
       piece.boarddiv.image.css({
-        "opacity":piece.revealed?"1":(legends.revealedarmynumber==piece.armynumber||legends.revealedarmynumber==-1?legends.styles.pieceopacity+"":"0"),
-        "filter":"alpha(opacity="+(piece.revealed?"100":(legends.revealedarmynumber==piece.armynumber||legends.revealedarmynumber==-1?(legends.styles.pieceopacity*100)+"":"0"))+")"
+        "opacity":piece.revealed?"1":(legends.gamedata.revealedarmynumber==piece.armynumber||legends.gamedata.revealedarmynumber==-1?legends.styles.pieceopacity+"":"0"),
+        "filter":"alpha(opacity="+(piece.revealed?"100":(legends.gamedata.revealedarmynumber==piece.armynumber||legends.gamedata.revealedarmynumber==-1?(legends.styles.pieceopacity*100)+"":"0"))+")"
       });
       piece.armiesdiv.css({
         "opacity":piece.alive?legends.styles.pieceopacity+"":"1",
         "filter":"alpha(opacity="+(piece.alive?(legends.styles.pieceopacity*100)+"":"100")+")"
       });
+      if(highlight){
+        var setboxshadowcss={
+          "-webkit-box-shadow":legends.styles.pieceshadow,
+          "-moz-box-shadow":legends.styles.pieceshadow,
+          "box-shadow":legends.styles.pieceshadow
+        };
+        var clearboxshadowcss={
+          "-webkit-box-shadow":"none",
+          "-moz-box-shadow":"none",
+          "box-shadow":"none"
+        };
+        piece.boarddiv.css(setboxshadowcss);
+        piece.armiesdiv.css(piece.alive?clearboxshadowcss:setboxshadowcss);
+        if(piece.clearboxshadowtimeout){
+          window.clearTimeout(piece.clearboxshadowtimeout);
+          piece.clearboxshadowtimeout=false;
+        }
+        piece.clearboxshadowtimeout=window.setTimeout((function(piece){
+          return function(){
+            piece.boarddiv.css(clearboxshadowcss);
+            piece.armiesdiv.css(clearboxshadowcss);
+          };
+        }(piece)),legends.styles.shadowtimeout);
+      }
     },
 
     "drawtile":function(tile){
       for(var i=0;i<tile.piecekeys.length;i++){
-        legends.drawpiece(legends.armies[tile.piecekeys[i].armynumber].pieces[tile.piecekeys[i].power][tile.piecekeys[i].number]);
+        legends.drawpiece(legends.armies[tile.piecekeys[i].armynumber].pieces[tile.piecekeys[i].power][tile.piecekeys[i].number],false);
       }
     },
 
@@ -525,7 +552,7 @@ var legendsconstructor=function(){
         for(var i=0;i<tile.piecekeys.length;i++){
           legends.armies[tile.piecekeys[i].armynumber].pieces[tile.piecekeys[i].power][tile.piecekeys[i].number].z=i;
         }
-        if(!legends.server.messagereceived){
+        if(legends.games.status!="server"){
           legends.drawtile(tile);
         }
       }
@@ -533,35 +560,35 @@ var legendsconstructor=function(){
 
     "reveal":function(armynumber,power,number,sendmessage){
       if(sendmessage){
-        legends.socket.emit("pieceaction",{"action":"reveal","armynumber":armynumber,"power":power,"number":number,"gameid":legends.server.gameid});
+        legends.socket.emit("pieceaction",{"action":"reveal","armynumber":armynumber,"power":power,"number":number,"gameid":legends.gamedata.gameid,"authentication":legends.gamedata.authentication});
       }
-      if((!legends.server.waitforreply)||(!sendmessage)){
+      if((!legends.server.waitforreply)||(!sendmessage)||legends.games.status=="server"){
         var piece=legends.armies[armynumber].pieces[power][number];
         piece.revealed=true;
-        if(!legends.server.messagereceived){
-          legends.drawpiece(piece);
+        if(legends.games.status!="server"){
+          legends.drawpiece(piece,true);
         }
       }
     },
 
     "unreveal":function(armynumber,power,number,sendmessage){
       if(sendmessage){
-        legends.socket.emit("pieceaction",{"action":"unreveal","armynumber":armynumber,"power":power,"number":number,"gameid":legends.server.gameid});
+        legends.socket.emit("pieceaction",{"action":"unreveal","armynumber":armynumber,"power":power,"number":number,"gameid":legends.gamedata.gameid,"authentication":legends.gamedata.authentication});
       }
-      if((!legends.server.waitforreply)||(!sendmessage)){
+      if((!legends.server.waitforreply)||(!sendmessage)||legends.games.status=="server"){
         var piece=legends.armies[armynumber].pieces[power][number];
         piece.revealed=false;
-        if(!legends.server.messagereceived){
-          legends.drawpiece(piece);
+        if(legends.games.status!="server"){
+          legends.drawpiece(piece,true);
         }
       }
     },
 
     "kill":function(armynumber,power,number,sendmessage){
       if(sendmessage){
-        legends.socket.emit("pieceaction",{"action":"kill","armynumber":armynumber,"power":power,"number":number,"gameid":legends.server.gameid});
+        legends.socket.emit("pieceaction",{"action":"kill","armynumber":armynumber,"power":power,"number":number,"gameid":legends.gamedata.gameid,"authentication":legends.gamedata.authentication});
       }
-      if((!legends.server.waitforreply)||(!sendmessage)){
+      if((!legends.server.waitforreply)||(!sendmessage)||legends.games.status=="server"){
         legends.remove(armynumber,power,number);
         var piece=legends.armies[armynumber].pieces[power][number];
         piece.alive=false;
@@ -569,23 +596,24 @@ var legendsconstructor=function(){
         piece.x="box";
         piece.y="box";
         piece.z=0;
-        if(!legends.server.messagereceived){
-          legends.drawpiece(piece);
+        if(legends.games.status!="server"){
+          legends.drawpiece(piece,true);
         }
       }
     },
 
     "moveto":function(armynumber,power,number,sendmessage,x,y){
       if(sendmessage){
-        legends.socket.emit("pieceaction",{"action":"moveto","armynumber":armynumber,"power":power,"number":number,"x":x,"y":y,"gameid":legends.server.gameid});
+        legends.socket.emit("pieceaction",{"action":"moveto","armynumber":armynumber,"power":power,"number":number,"x":x,"y":y,"gameid":legends.gamedata.gameid,"authentication":legends.gamedata.authentication});
       }
-      if((!legends.server.waitforreply)||(!sendmessage)){
+      if((!legends.server.waitforreply)||(!sendmessage)||legends.games.status=="server"){
         legends.remove(armynumber,power,number);
         var piece=legends.armies[armynumber].pieces[power][number];
         if(x=="deathcurse"||y=="deathcurse"){
-          if(legends.board.deathcurse.piecekeys.length>0){
-            var olddeathcursepiece=legends.board.deathcurse.piecekeys[0]
-            legends.kill(olddeathcursepiece.armynumber,olddeathcursepiece.power,olddeathcursepiece.number,sendmessage);
+          if(legends.board.deathcurse.piecekeys.length>0&&(legends.server.waitforreply?legends.games.status=="server":(sendmessage&&legends.games.status!="server"))){
+            for(var i=0;i<legends.board.deathcurse.piecekeys.length;i++){
+              legends.kill(legends.board.deathcurse.piecekeys[i].armynumber,legends.board.deathcurse.piecekeys[i].power,legends.board.deathcurse.piecekeys[i].number,sendmessage);
+            }
           }
           piece.alive=true;
           piece.deathcurse=true;
@@ -596,8 +624,8 @@ var legendsconstructor=function(){
           piece.alive=true;
           piece.deathcurse=false;
           var tile=legends.board.tiles[x][y];
-          if(tile.piecekeys.length==1&&legends.armies[tile.piecekeys[0].armynumber].side!=legends.armies[piece.armynumber].side){
-            piece.revealed=true;
+          if(tile.piecekeys.length==1&&legends.armies[tile.piecekeys[0].armynumber].side!=legends.armies[piece.armynumber].side&&(legends.server.waitforreply?legends.games.status=="server":(sendmessage&&legends.games.status!="server"))){
+            legends.reveal(piece.armynumber,piece.power,piece.number,sendmessage);
             for(var i=0;i<tile.piecekeys.length;i++){
               legends.reveal(tile.piecekeys[i].armynumber,tile.piecekeys[i].power,tile.piecekeys[i].number,sendmessage);
             }
@@ -607,8 +635,9 @@ var legendsconstructor=function(){
         piece.y=y;
         piece.z=tile.piecekeys.length;
         tile.piecekeys.push({"armynumber":armynumber,"power":power,"number":number});
-        if(!legends.server.messagereceived){
+        if(legends.games.status!="server"){
           legends.drawtile(tile);
+          legends.drawpiece(piece,true);
         }
       }
     },
@@ -618,21 +647,37 @@ var legendsconstructor=function(){
         legends.alttext.timer=window.setTimeout((function(pageX,pageY){
           return function(){
             if(!legends.dragging.activepiece){
-              legends.alttext.div.css({
-                "display":"block",
+              legends.alttext.div.show().css({
                 "left":pageX+"px",
                 "top":pageY+"px",
-                "z-index":(legends.armies.length*30+2)+""
+                "z-index":(legends.dragging.zindex+1)+""
               });
+              if((pageY-$(window).scrollTop())/$(window).height()<legends.styles.alttextthreshold){
+                legends.alttext.innerdiv.css({
+                  "top":legends.styles.alttextmarginsize.bottom+"px",
+                  "bottom":"auto"
+                });
+              }
+              else{
+                legends.alttext.innerdiv.css({
+                  "top":"auto",
+                  "bottom":legends.styles.alttextmarginsize.top+"px"
+                });
+              }
             }
           };
-        })(pageX,pageY),legends.styles.alttextwait);
+        })(pageX,pageY),legends.alttext.fast?legends.styles.alttextfastwait:legends.styles.alttextwait);
       },
       "init":function(){
         legends.alttext.timer=false;
-        legends.alttext.div=$("<div></div>").appendTo(legends.div).css(jQuery.extend({
+        legends.alttext.fast=true;
+        legends.alttext.div=$("<div></div>").appendTo(legends.div).hide().css({
           "position":"absolute",
-          "display":"none"
+          "right":"0px"
+        });
+        legends.alttext.innerdiv=$("<div></div>").appendTo(legends.alttext.div).css(jQuery.extend({
+          "position":"absolute",
+          "left":"0px"
         },legends.styles.alttextcss));
         $(document).mousemove(function(event){
           if(legends.alttext.timer){
@@ -642,114 +687,129 @@ var legendsconstructor=function(){
         });
       },
       "hide":function(){
-        legends.alttext.div.css({
-          "display":"none"
-        });
+        legends.alttext.div.hide();
         window.clearTimeout(legends.alttext.timer);
         legends.alttext.timer=false;
       },
       "set":function(piece){
         var data=legends.piecedata[piece.id];
         piece.alttext="<u><b>"+data.power+" "+data.name+"</b> ("+data.race+")</u><br>"+data.abilities;
-        piece.boarddiv.mouseover((function(piece){
+        var mouseoverfunction=(function(piece){
           return function(event){
-            if(piece.revealed||legends.revealedarmynumber==piece.armynumber||legends.revealedarmynumber==-1){
-              legends.alttext.div.html(piece.alttext);
+            if(piece.revealed||legends.gamedata.revealedarmynumber==piece.armynumber||legends.gamedata.revealedarmynumber==-1){
+              legends.alttext.innerdiv.html(piece.alttext);
               legends.alttext.starttimer(event.pageX,event.pageY);
             }
           };
-        })(piece));
-        piece.boarddiv.mouseout((function(piece){
-          return function(event){
-            if(piece.revealed||legends.revealedarmynumber==piece.armynumber||legends.revealedarmynumber==-1){
-              legends.alttext.hide();
-              legends.alttext.div.css({
-                "display":"none"
-              });
-              window.clearTimeout(legends.alttext.timer);
-              legends.alttext.timer=false;
-            }
-          };
-        })(piece));
+        })(piece);
+        piece.boarddiv.mouseover(mouseoverfunction);
+        piece.boarddiv.mouseup(mouseoverfunction);
+        piece.boarddiv.mouseout(legends.alttext.hide);
         piece.armiesdiv.mouseover((function(piece){
           return function(event){
-            legends.alttext.div.html(piece.alttext);
+            legends.alttext.innerdiv.html(piece.alttext);
             legends.alttext.starttimer(event.pageX,event.pageY);
           };
         })(piece));
-        piece.armiesdiv.mouseout(function(event){
-          legends.alttext.hide();
-        });
+        piece.armiesdiv.mouseout(legends.alttext.hide);
+      },
+      "setextra":function(object,pieceid,overwrite){
+        if(pieceid==-1){
+          object.alttext="";
+        }
+        else{
+          var data=legends.piecedata[pieceid];
+          object.alttext="<u>"+pieceid+": <b>"+data.power+" "+data.name+"</b> ("+data.race+")</u><br>"+data.abilities;
+        }
+        if(!overwrite){
+          object.mouseover((function(object){
+            return function(event){
+              legends.alttext.innerdiv.html(object.alttext);
+              legends.alttext.starttimer(event.pageX,event.pageY);
+            };
+          })(object));
+          object.mouseout(legends.alttext.hide);
+        }
       }
     },
 
     "dragging":{
+      "mousemovefunction":function(event){
+        if(legends.dragging.activepiece){
+          legends.dragging.activepiece.boarddiv.css({
+            "left":(event.pageX-legends.dragging.offsetX)+"px",
+            "top":(event.pageY-legends.dragging.offsetY)+"px",
+            "z-index":legends.dragging.zindex+"",
+            "-webkit-box-shadow":"none",
+            "-moz-box-shadow":"none",
+            "box-shadow":"none"
+          });
+        }
+      },
       "init":function(){
+        legends.dragging.zindex=1;
         legends.dragging.activepiece=false;
         legends.dragging.offsetX=0;
         legends.dragging.offsetY=0;
-        $(document).mousemove(function(event){
-          if(legends.dragging.activepiece){
-            legends.dragging.activepiece.boarddiv.css({
-              "left":(event.pageX-legends.dragging.offsetX)+"px",
-              "top":(event.pageY-legends.dragging.offsetY)+"px",
-              "z-index":(legends.armies.length*30+1)+""
-            });
-          }
-        });
+        $(document).mousemove(legends.dragging.mousemovefunction);
       },
       "set":function(piece){
-        piece.boarddiv.click((function(piece){
+        legends.dragging.zindex++;
+        piece.boarddiv.mousedown((function(piece){
           return function(event){
-            if(legends.dragging.activepiece){
-              var boardx=parseFloat(legends.dragging.activepiece.boarddiv.css("left"))+(legends.styles.piecewidth/2)+legends.styles.bordersize-legends.styles.marginsize;
-              var boardy=parseFloat(legends.dragging.activepiece.boarddiv.css("top"))+(legends.styles.pieceheight/2)+legends.styles.bordersize-legends.styles.marginsize;
-              var deathcursex=boardx-legends.styles.tilesize*legends.getdisplayedboardsize("x")-legends.styles.marginsize;
-              var deathcursey=boardy-legends.styles.tilesize*((legends.getdisplayedboardsize("y")-1)/2);
-              var x=legends.boardrotate("x",-1,Math.floor(boardx/legends.styles.tilesize),Math.floor(boardy/legends.styles.tilesize));
-              var y=legends.boardrotate("y",-1,Math.floor(boardx/legends.styles.tilesize),Math.floor(boardy/legends.styles.tilesize));
-              if(typeof(legends.board.tiles[x])!="undefined"&&typeof(legends.board.tiles[x][y])!="undefined"){
-                if(legends.board.tiles[x][y].piecekeys.length>1){
-                  if(piece.x=="box"||piece.y=="box"){
-                    legends.kill(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true);
-                  }
-                  else if(piece.x=="deathcurse"||piece.y=="deathcurse"){
-                    legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,"deathcurse","deathcurse");
+            if(event.which==1){
+              if(legends.dragging.activepiece){
+                legends.dragging.zindex++;
+                var boardx=parseFloat(legends.dragging.activepiece.boarddiv.css("left"))+(legends.styles.piecewidth/2)+legends.styles.bordersize-legends.styles.marginsize;
+                var boardy=parseFloat(legends.dragging.activepiece.boarddiv.css("top"))+(legends.styles.pieceheight/2)+legends.styles.bordersize-legends.styles.marginsize;
+                var deathcursex=boardx-legends.styles.tilesize*legends.getdisplayedboardsize("x")-legends.styles.marginsize;
+                var deathcursey=boardy-legends.styles.tilesize*((legends.getdisplayedboardsize("y")-1)/2);
+                var x=legends.boardrotate("x",-1,Math.floor(boardx/legends.styles.tilesize),Math.floor(boardy/legends.styles.tilesize));
+                var y=legends.boardrotate("y",-1,Math.floor(boardx/legends.styles.tilesize),Math.floor(boardy/legends.styles.tilesize));
+                if(legends.board.tiles[x]&&legends.board.tiles[x][y]){
+                  if(legends.board.tiles[x][y].piecekeys.length>1){
+                    if(piece.x=="box"||piece.y=="box"){
+                      legends.kill(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true);
+                    }
+                    else if(piece.x=="deathcurse"||piece.y=="deathcurse"){
+                      legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,"deathcurse","deathcurse");
+                    }
+                    else{
+                      legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,piece.x,piece.y);
+                    }
                   }
                   else{
-                    legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,piece.x,piece.y);
+                    legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,x,y);
                   }
                 }
-                else{
-                  legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,x,y);
+                else if(deathcursex>=0&&deathcursex<=legends.styles.tilesize&&deathcursey>=0&&deathcursey<=legends.styles.tilesize){
+                  legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,"deathcurse","deathcurse");
                 }
-              }
-              else if(deathcursex>=0&&deathcursex<=legends.styles.tilesize&&deathcursey>=0&&deathcursey<=legends.styles.tilesize){
-                legends.moveto(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true,"deathcurse","deathcurse");
+                else{
+                  legends.kill(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true);
+                }
+                legends.dragging.activepiece=false;
               }
               else{
-                legends.kill(legends.dragging.activepiece.armynumber,legends.dragging.activepiece.power,legends.dragging.activepiece.number,true);
+                legends.dragging.activepiece=piece;
+                legends.dragging.offsetX=event.pageX-parseFloat(piece.boarddiv.css("left"));
+                legends.dragging.offsetY=event.pageY-parseFloat(piece.boarddiv.css("top"));
+                legends.alttext.hide();
               }
-              legends.dragging.activepiece=false;
-            }
-            else{
-              legends.dragging.activepiece=piece;
-              legends.dragging.offsetX=event.pageX-parseFloat(piece.boarddiv.css("left"));
-              legends.dragging.offsetY=event.pageY-parseFloat(piece.boarddiv.css("top"));
-              legends.alttext.hide();
             }
           };
         })(piece));
-        piece.armiesdiv.click((function(piece){
+        piece.armiesdiv.mousedown((function(piece){
           return function(event){
-            if((!piece.alive)&&(!legends.dragging.activepiece)){
+            if(event.which==1&&(!piece.alive)&&(!legends.dragging.activepiece)){
               piece.alive=true;
               piece.revealed=true;
-              legends.drawpiece(piece);
+              legends.drawpiece(piece,false);
               legends.dragging.activepiece=piece;
               legends.dragging.offsetX=legends.styles.piecewidth/2+legends.styles.bordersize;
               legends.dragging.offsetY=legends.styles.pieceheight/2+legends.styles.bordersize;
               legends.alttext.hide();
+              legends.dragging.mousemovefunction(event);
             }
           };
         })(piece));
@@ -759,21 +819,25 @@ var legendsconstructor=function(){
     "games":{
       "join":{
         "gameslist":[],
-        "joingame":function(gameid,revealedarmynumber,boardrotations){
+        "joingame":function(gameid,authentication,revealedarmynumber,boardrotations){
+          legends.games.div.empty().html("Joining game...");
+          legends.games.status="joining";
           if(boardrotations=="default"){
-            boardrotations=revealedarmynumber%2==0?2:0;
+            legends.gamedata.boardrotations=revealedarmynumber%2==0?2:0;
           }
-          legends.server.gameid=gameid;
-          legends.revealedarmynumber=revealedarmynumber;
-          legends.boardrotations=boardrotations;
+          else{
+            legends.gamedata.boardrotations=boardrotations*1;
+          }
+          legends.gamedata.gameid=gameid;
+          legends.gamedata.authentication=authentication;
+          legends.gamedata.revealedarmynumber=revealedarmynumber;
           legends.socket.emit("joingame",{
-            "gameid":legends.server.gameid
+            "gameid":legends.gamedata.gameid,
+            "authentication":legends.gamedata.authentication
           });
         }
       },
       "create":{
-        "revealedarmynumber":-1,
-        "boardrotations":"default",
         "players":[],
         "getarmycodes":function(){
           returnvalue=[];
@@ -781,7 +845,8 @@ var legendsconstructor=function(){
             returnvalue.push({
               "side":legends.games.create.players[armynumber].sidedropdown.val(),
               "coordinates":[{"x":legends.games.create.players[armynumber].x1input.val()*1,"y":legends.games.create.players[armynumber].y1input.val()*1},{"x":legends.games.create.players[armynumber].x2input.val()*1,"y":legends.games.create.players[armynumber].y2input.val()*1}],
-              "code":legends.games.create.players[armynumber].codeinput.val()
+              "code":legends.games.create.players[armynumber].codeinput.val(),
+              "playername":legends.games.create.players[armynumber].playernameinput.val()
             });
           }
           return returnvalue;
@@ -789,18 +854,22 @@ var legendsconstructor=function(){
         "addplayer":function(){
           var armynumber=legends.games.create.players.length;
           legends.games.create.players[armynumber]={
-            "playernameinput":$("<input type=\"text\" size=\"10\" value=\"player "+(armynumber+1)+"\">"),
+            "playernameinput":$("<input type=\"text\" size=\"10\" value=\"Player "+(armynumber+1)+"\">").change((function(armynumber){
+              return function(event){
+                legends.games.create.players[armynumber].button.text("Create and join as "+legends.games.create.players[armynumber].playernameinput.val());
+              };
+            })(armynumber)),
             "sidedropdown":$("<select><option value=\"good\""+(armynumber%2==0?" selected":"")+">good</option><option value=\"evil\""+(armynumber%2==0?"":" selected")+">evil</select>"),
-            "codeinput":$("<input type=\"text\" size=\"25\" value=\""+(armynumber%2==0?"28,84,93,66,87,10,40,44,50,53,59,69,80,90,100,63,81,7,19,41,47,56,62,71,78,83,89,92,95,102":"144,150,168,185,188,191,194,141,159,112,121,134,138,183,200,176,182,147,153,156,179,202,118,124,163,169,174,177,195,201")+"\">"),
+            "codeinput":$("<input type=\"text\" size=\"25\" value=\"\">"),
             "x1input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8)+"\">").css({"width":"2.5em"}),
             "y1input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"}),
             "x2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8+4)+"\">").css({"width":"2.5em"}),
             "y2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"})
           };
-          legends.games.create.playerspan.append(document.createTextNode("Player: "),legends.games.create.players[armynumber].playernameinput,document.createTextNode(" with "),legends.games.create.players[armynumber].sidedropdown,document.createTextNode(" army code "),legends.games.create.players[armynumber].codeinput,document.createTextNode(" at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(")"),$("<br>"));
-          legends.games.create.players[armynumber].button=$("<button>Create and join as player "+(armynumber+1)+"</button>").appendTo(legends.games.create.joinspan).click((function(armynumber){
+          legends.games.create.playerspan.append(document.createTextNode("Player "+(armynumber+1)+": player name "),legends.games.create.players[armynumber].playernameinput,document.createTextNode(" with "),legends.games.create.players[armynumber].sidedropdown,document.createTextNode(" army code "),legends.games.create.players[armynumber].codeinput,document.createTextNode(" at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(")"),$("<br>"));
+          legends.games.create.players[armynumber].button=$("<button></button>").text("Create and join as Player "+(armynumber+1)).appendTo(legends.games.create.joinspan).click((function(armynumber){
             return function(event){
-              legends.games.create.creategame(legends.games.create.getarmycodes(),armynumber,legends.games.create.boardrotationdropdown.val());
+              legends.games.create.creategame(armynumber,legends.games.create.boardrotationdropdown.val());
             };
           })(armynumber));
           legends.games.create.joinspan.append(document.createTextNode(" "));
@@ -828,9 +897,12 @@ var legendsconstructor=function(){
           }
           return false;
         },
-        "creategame":function(armycodes,revealedarmynumber,boardrotations){
-          legends.games.create.revealedarmynumber=revealedarmynumber;
-          legends.games.create.boardrotations=boardrotations;
+        "creategame":function(revealedarmynumber,boardrotations){
+          legends.games.status="creating";
+          var armycodes=legends.games.create.getarmycodes();
+          legends.gamedata.gamename=legends.games.create.gamenameinput.val();
+          legends.gamedata.revealedarmynumber=revealedarmynumber;
+          legends.gamedata.boardrotations=boardrotations;
           var coordinates=[];
           for(var armynumber=0;armynumber<armycodes.length;armynumber++){
             armycodes[armynumber].pieces=legends.getpieces(armycodes[armynumber].code,armycodes[armynumber].side);
@@ -847,182 +919,220 @@ var legendsconstructor=function(){
             return;
           }
           legends.setboard();
-          legends.socket.emit("creategame",{"board":legends.board,"armies":legends.armies});
+          legends.games.div.empty().html("Creating game...");
+          legends.socket.emit("creategame",{"board":legends.board,"armies":legends.armies,"gamename":legends.gamedata.gamename});
         }
       }
     },
 
     "init":function(){
+      legends.games.status="init";
+      $(document.body).css({
+        "font-family":"sans-serif"
+      });
       legends.div=$("<div></div>").appendTo($(document.body));
       legends.alttext.init();
       legends.dragging.init();
       legends.socket=io(legends.server.socket);
 
       legends.socket.on("gameslist",function(gameslist){
-        if(legends.server.messagereceived){
-          legends.server.messagereceived=false;
-          var boardrotationdropdownhtml="<select><option value=\"default\">default</option><option value=\"2\">north</option><option value=\"3\">east</option><option value=\"0\">south</option><option value=\"1\">west</option></select>";
-          legends.games.join.gameslist=gameslist;
-          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1>Stratego Legends</h1>"),$("<h2>Controls</h2>"),$("<p>Left-click on pieces to move them, right-click to reveal or unreveal them and drop them off the board or middle click to move them to the box.</p>"),$("<h2>Create a game</h2>"));
+        var boardrotationdropdownhtml="<select><option value=\"default\">default</option><option value=\"2\">north</option><option value=\"3\">east</option><option value=\"0\">south</option><option value=\"1\">west</option></select>";
+        if(legends.games.status=="init"){
+          legends.games.status="lobby";
+          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").text("Stratego Legends").css({"text-align":"center"}),$("<h2>How to play</h2>"),$("<p>Left-click on pieces to move them, right-click to reveal them, and either drop them off the board or middle-click to move them to the box.</p><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>"));
           legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.playerspan=$("<span></span>").appendTo(legends.games.create.playerp);
-          legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\">");
+          legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">");
           legends.games.create.playerspan.append(document.createTextNode("Game name: "),legends.games.create.gamenameinput,$("<br>"));
           legends.games.create.addplayerbutton=$("<button>Add a player</button>").appendTo(legends.games.create.playerp).click(legends.games.create.addplayer);
           legends.games.create.joinp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.joinspan=$("<span></span>").appendTo(legends.games.create.joinp);
           legends.games.create.observerbutton=$("<button>Create and join as an observer</button>").appendTo(legends.games.create.joinp).click(function(event){
-            legends.games.create.creategame(legends.games.create.getarmycodes(),-1,legends.games.create.boardrotationdropdown.val());
+            legends.games.create.creategame(-1,legends.games.create.boardrotationdropdown.val());
           });
           legends.games.create.joinp.append(document.createTextNode(" facing "));
           legends.games.create.boardrotationdropdown=$(boardrotationdropdownhtml).appendTo(legends.games.create.joinp);
           for(var armynumber=0;armynumber<2;armynumber++){
             legends.games.create.addplayer();
           }
-          if(legends.games.join.gameslist.length>0){
-            legends.games.div.append($("<h2>Join a game</h2>"));
-            legends.games.join.p=$("<p></p>").appendTo(legends.games.div);
-            for(var gameid=0;gameid<legends.games.join.gameslist.length;gameid++){
-              legends.games.join.p.append(document.createTextNode("Game "+(gameid+1)+": "));
-              for(var armynumber=0;armynumber<=legends.games.join.gameslist[gameid].length;armynumber++){
-                if(armynumber==legends.games.join.gameslist[gameid].length){
-                  legends.games.join.gameslist[gameid].observerbutton=$("<button>Join as an observer</button>").appendTo(legends.games.join.p).click((function(gameid){
+          legends.games.div.append($("<h2>Join a game</h2>"));
+          legends.games.join.p=$("<p></p>").appendTo(legends.games.div);
+          legends.games.div.append($("<h2>Design an army</h2>"));
+          legends.designarmy.initbutton=$("<button>Show army design tool</button>").appendTo(legends.games.div).click(legends.designarmy.init);
+        }
+        if(legends.games.status=="lobby"){
+          if(legends.games.create.gamenameinput.val()=="Game "+(legends.games.join.gameslist.length+1)){
+            legends.games.create.gamenameinput.val("Game "+(gameslist.length+1));
+          }
+          legends.games.join.p.empty();
+          legends.games.join.gameslist=gameslist;
+          var nogamesavailable=true;
+          for(var gamenumber=0;gamenumber<legends.games.join.gameslist.length;gamenumber++){
+            if(legends.games.join.gameslist[gamenumber]){
+              if(nogamesavailable){
+                nogamesavailable=false;
+              }
+              else{
+                legends.games.join.p.append($("<br>"));
+              }
+              var gameid=legends.games.join.gameslist[gamenumber].gameid;
+              legends.games.join.p.append(document.createTextNode(legends.games.join.gameslist[gamenumber].gamename+": "));
+              for(var armynumber=0;armynumber<=legends.games.join.gameslist[gamenumber].players.length;armynumber++){
+                if(armynumber==legends.games.join.gameslist[gamenumber].players.length){
+                  legends.games.join.gameslist[gamenumber].observerbutton=$("<button>Join as an observer</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
                     return function(event){
-                      legends.games.join.joingame(gameid,-1,legends.games.join.gameslist[gameid].boardrotationdropdown.val());
+                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,-1,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val());
                     };
-                  })(gameid));
+                  })(gamenumber,gameid));
                 }
                 else{
-                  legends.games.join.gameslist[gameid][armynumber].button=$("<button>Join as player "+(armynumber+1)+" ("+legends.games.join.gameslist[gameid][armynumber].side+")</button>").appendTo(legends.games.join.p).click((function(gameid,armynumber){
+                  legends.games.join.gameslist[gamenumber].players[armynumber].button=$("<button></button>").text("Join as "+legends.games.join.gameslist[gamenumber].players[armynumber].playername+" ("+legends.games.join.gameslist[gamenumber].players[armynumber].side+")").appendTo(legends.games.join.p).click((function(gamenumber,gameid,armynumber){
                     return function(event){
-                      legends.games.join.joingame(gameid,armynumber,legends.games.join.gameslist[gameid].boardrotationdropdown.val());
+                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,armynumber,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val());
                     };
-                  })(gameid,armynumber));
+                  })(gamenumber,gameid,armynumber));
                 }
                 legends.games.join.p.append(document.createTextNode(" "));
               }
               legends.games.join.p.append(document.createTextNode("facing "));
-              legends.games.join.gameslist[gameid].boardrotationdropdown=$(boardrotationdropdownhtml).appendTo(legends.games.join.p);
-              if(gameid<legends.games.join.gameslist.length-1){
-                legends.games.join.p.append($("<br>"));
-              }
+              legends.games.join.gameslist[gamenumber].boardrotationdropdown=$(boardrotationdropdownhtml).appendTo(legends.games.join.p);
+              legends.games.join.p.append(document.createTextNode(" / "));
+              legends.games.join.gameslist[gamenumber].deletebutton=$("<button>Delete game</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
+                return function(){
+                  if(confirm("Are you sure you want to delete this game?")){
+                    legends.socket.emit("deletegame",{"gameid":gameid,"authentication":legends.games.join.gameslist[gamenumber].authentication});
+                  }
+                };
+              })(gamenumber,gameid));
             }
           }
-          legends.games.div.append($("<h2>Design an army</h2>"));
+          if(nogamesavailable){
+            legends.games.join.p.html("No games available.");
+          }
         }
       });
 
-      legends.socket.on("gamecreated",function(gameid){
-        legends.games.join.joingame(gameid,legends.games.create.revealedarmynumber,legends.games.create.boardrotations);
+      legends.socket.on("gamecreated",function(data){
+        if(legends.games.status=="creating"){
+          legends.games.join.joingame(data.gameid,data.authentication,legends.gamedata.revealedarmynumber,legends.gamedata.boardrotations);
+        }
       });
 
-      legends.socket.on("init",function(boardandarmies){
-        legends.games.div.remove();
-        legends.armies=boardandarmies.armies;
-        legends.board=boardandarmies.board;
-        legends.board.div=$("<div></div>").appendTo(legends.div);
-        for(var x=0;x<legends.board.tiles.length;x++){
-          if(typeof(legends.board.tiles[x])!="undefined"){
-            for(var y=0;y<legends.board.tiles[x].length;y++){
-              if(typeof(legends.board.tiles[x][y])!="undefined"){
-                legends.board.tiles[x][y].div=$("<div></div>").appendTo(legends.board.div).css({
-                  "position":"absolute",
-                  "left":(legends.styles.marginsize+legends.styles.tilesize*legends.boardrotate("x",1,x,y))+"px",
-                  "top":(legends.styles.marginsize+legends.styles.tilesize*legends.boardrotate("y",1,x,y))+"px",
-                  "width":legends.styles.tilesize+"px",
-                  "height":legends.styles.tilesize+"px",
-                  "background-image":"url('"+legends.server.imagedirectory+"terrains/"+legends.board.tiles[x][y].terrain+".jpg')",
-                  "background-size":"100% 100%"
-                });
+      legends.socket.on("init",function(data){
+        if(legends.games.status=="joining"){
+          legends.games.status="ingame";
+          legends.alttext.fast=false;
+          legends.games.div.remove();
+          legends.armies=data.armies;
+          legends.board=data.board;
+          legends.gamedata.gamename=data.gamename;
+          legends.board.div=$("<div></div>").appendTo(legends.div);
+          for(var x=0;x<legends.board.tiles.length;x++){
+            if(legends.board.tiles[x]){
+              for(var y=0;y<legends.board.tiles[x].length;y++){
+                if(legends.board.tiles[x][y]){
+                  legends.board.tiles[x][y].div=$("<div></div>").appendTo(legends.board.div).css({
+                    "position":"absolute",
+                    "left":(legends.styles.marginsize+legends.styles.tilesize*legends.boardrotate("x",1,x,y))+"px",
+                    "top":(legends.styles.marginsize+legends.styles.tilesize*legends.boardrotate("y",1,x,y))+"px",
+                    "width":legends.styles.tilesize+"px",
+                    "height":legends.styles.tilesize+"px",
+                    "background-image":"url('"+legends.server.imagedirectory+"terrains/"+legends.board.tiles[x][y].terrain+".jpg')",
+                    "background-size":"100% 100%"
+                  });
+                }
               }
             }
           }
-        }
-        legends.board.deathcurse.div=$("<div></div>").appendTo(legends.board.div).css({
-          "position":"absolute",
-          "left":(legends.styles.marginsize*2+legends.styles.tilesize*legends.getdisplayedboardsize("x"))+"px",
-          "top":(legends.styles.marginsize+legends.styles.tilesize*((legends.getdisplayedboardsize("y")-1)/2))+"px",
-          "width":legends.styles.tilesize+"px",
-          "height":legends.styles.tilesize+"px",
-          "background-image":"url('"+legends.server.imagedirectory+"deathcurse.png')",
-          "background-size":"100% 100%"
-        });
-        legends.armies.div=$("<div></div>").appendTo(legends.div).css({
-          "position":"absolute",
-          "left":(legends.styles.marginsize*3+legends.styles.tilesize*(legends.getdisplayedboardsize("x")+1))+"px",
-          "top":"0px"
-        });
-        var reverseorder=legends.boardrotations%4==2||legends.boardrotations%4==3;
-        for(var armynumber=reverseorder?legends.armies.length-1:0;reverseorder?(armynumber>=0):(armynumber<legends.armies.length);armynumber+=reverseorder?-1:1){
-          $("<div>"+(legends.armies.length>2?("Army "+(armynumber+1)):(legends.armies[armynumber].side.substr(0,1).toUpperCase()+legends.armies[armynumber].side.substr(1)+" army"))+"</div>").appendTo(legends.armies.div).css({
-            "margin-top":legends.styles.marginsize+"px",
-            "font-family":"sans-serif",
-            "font-weight":"bold",
-            "text-align":"center"
-          });
-          legends.armies[armynumber].div=$("<div></div>").appendTo(legends.armies.div).css({
-            "position":"relative",
-            "width":(legends.styles.armypiecewidth*6)+"px",
-            "height":(legends.styles.armypieceheight*5)+"px",
-            "background-image":"url('"+legends.server.imagedirectory+"box.png')",
+          legends.board.deathcurse.div=$("<div></div>").appendTo(legends.board.div).css({
+            "position":"absolute",
+            "left":(legends.styles.marginsize*2+legends.styles.tilesize*legends.getdisplayedboardsize("x"))+"px",
+            "top":(legends.styles.marginsize+legends.styles.tilesize*((legends.getdisplayedboardsize("y")-1)/2))+"px",
+            "width":legends.styles.tilesize+"px",
+            "height":legends.styles.tilesize+"px",
+            "background-image":"url('"+legends.server.imagedirectory+"deathcurse.png')",
             "background-size":"100% 100%"
           });
-          for(var power in legends.powerquantities){
-            if(legends.powerquantities.hasOwnProperty(power)){
-              for(var number=0;number<legends.powerquantities[power];number++){
-                var piece=legends.armies[armynumber].pieces[power][number];
-                piece.boarddiv=$("<div></div>").appendTo(legends.board.div).css({
-                  "position":"absolute",
-                  "width":legends.styles.piecewidth+"px",
-                  "height":legends.styles.pieceheight+"px",
-                  "background-color":legends.armies[armynumber].side=="good"?legends.styles.goodcolour:legends.styles.evilcolour,
-                  "border":legends.styles.bordersize+"px outset "+(legends.armies[armynumber].side=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour)
-                });
-                piece.boarddiv.image=$("<div></div>").appendTo(piece.boarddiv).css({
-                  "position":"absolute",
-                  "left":"0px",
-                  "top":"0px",
-                  "width":"100%",
-                  "height":"100%",
-                  "background-image":"url('"+legends.server.imagedirectory+"pieces/"+piece.id+".jpg')",
-                  "background-size":"100% 100%"
-                });
-                var coordinates=legends.getboxcoordinates(power,number);
-                piece.armiesdiv=$("<div></div>").appendTo(legends.armies[armynumber].div).css({
-                  "position":"absolute",
-                  "left":(coordinates.x*legends.styles.armypiecewidth)+"px",
-                  "top":(coordinates.y*legends.styles.armypieceheight)+"px",
-                  "width":(legends.styles.armypiecewidth-legends.styles.armypiecemarginsize*2)+"px",
-                  "height":(legends.styles.armypieceheight-legends.styles.armypiecemarginsize*2)+"px",
-                  "margin":legends.styles.armypiecemarginsize+"px",
-                  "-webkit-border-radius":legends.styles.armypieceborderradius+"px",
-                  "-moz-border-radius":legends.styles.armypieceborderradius+"px",
-                  "border-radius":legends.styles.armypieceborderradius+"px",
-                  "background-image":"url('"+legends.server.imagedirectory+"pieces/"+piece.id+".jpg')",
-                  "background-size":"100% 100%"
-                });
-                legends.drawpiece(piece);
-                legends.alttext.set(piece);
-                legends.dragging.set(piece);
-                piece.boarddiv.on("contextmenu",(function(piece){
-                  return function(event){
-                    if(piece.revealed){
-                      legends.unreveal(piece.armynumber,piece.power,piece.number,true);
-                    }
-                    else{
-                      legends.reveal(piece.armynumber,piece.power,piece.number,true);
-                    }
+          legends.armies.div=$("<div></div>").appendTo(legends.div).css({
+            "position":"absolute",
+            "left":(legends.styles.marginsize*3+legends.styles.tilesize*(legends.getdisplayedboardsize("x")+1))+"px",
+            "top":"0px"
+          });
+          var reverseorder=legends.gamedata.boardrotations%4==2;
+          var headercss={
+            "margin-top":legends.styles.marginsize+"px",
+            "font-weight":"bold",
+            "text-align":"center"
+          };
+          $("<h2></h2>").text(legends.gamedata.gamename).appendTo(legends.armies.div).css(headercss);
+          for(var armynumber=reverseorder?legends.armies.length-1:0;reverseorder?(armynumber>=0):(armynumber<legends.armies.length);armynumber+=reverseorder?-1:1){
+            $("<div></div>").text(legends.armies[armynumber].playername+"'s army ("+legends.armies[armynumber].side+")").appendTo(legends.armies.div).css(headercss);
+            legends.armies[armynumber].div=$("<div></div>").appendTo(legends.armies.div).css({
+              "position":"relative",
+              "width":(legends.styles.armypiecewidth*6)+"px",
+              "height":(legends.styles.armypieceheight*5)+"px",
+              "background-image":"url('"+legends.server.imagedirectory+"box.png')",
+              "background-size":"100% 100%"
+            });
+            for(var power in legends.powerquantities){
+              if(legends.powerquantities.hasOwnProperty(power)){
+                for(var number=0;number<legends.powerquantities[power];number++){
+                  var piece=legends.armies[armynumber].pieces[power][number];
+                  piece.boarddiv=$("<div></div>").appendTo(legends.board.div).css({
+                    "position":"absolute",
+                    "width":legends.styles.piecewidth+"px",
+                    "height":legends.styles.pieceheight+"px",
+                    "background-color":legends.armies[armynumber].side=="good"?legends.styles.goodcolour:legends.styles.evilcolour,
+                    "border":legends.styles.bordersize+"px outset "+(legends.armies[armynumber].side=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour)
+                  });
+                  piece.boarddiv.image=$("<div></div>").appendTo(piece.boarddiv).css({
+                    "position":"absolute",
+                    "left":"0px",
+                    "top":"0px",
+                    "width":"100%",
+                    "height":"100%",
+                    "background-image":"url('"+legends.server.imagedirectory+"pieces/"+piece.id+".jpg')",
+                    "background-size":"100% 100%"
+                  });
+                  var coordinates=legends.getboxcoordinates(power,number);
+                  piece.armiesdiv=$("<div></div>").appendTo(legends.armies[armynumber].div).css({
+                    "position":"absolute",
+                    "left":(coordinates.x*legends.styles.armypiecewidth)+"px",
+                    "top":(coordinates.y*legends.styles.armypieceheight)+"px",
+                    "width":(legends.styles.armypiecewidth-legends.styles.armypiecemarginsize*2)+"px",
+                    "height":(legends.styles.armypieceheight-legends.styles.armypiecemarginsize*2)+"px",
+                    "margin":legends.styles.armypiecemarginsize+"px",
+                    "-webkit-border-radius":legends.styles.armypieceborderradius+"px",
+                    "-moz-border-radius":legends.styles.armypieceborderradius+"px",
+                    "border-radius":legends.styles.armypieceborderradius+"px",
+                    "background-image":"url('"+legends.server.imagedirectory+"pieces/"+piece.id+".jpg')",
+                    "background-size":"100% 100%"
+                  });
+                  legends.drawpiece(piece,false);
+                  legends.alttext.set(piece);
+                  legends.dragging.set(piece);
+                  piece.boarddiv.on("contextmenu",function(event){
                     event.preventDefault();
-                  };
-                })(piece));
-                piece.boarddiv.mousedown((function(piece){
-                  return function(event){
-                    if(event.which==2){
-                      legends.kill(piece.armynumber,piece.power,piece.number,true);
-                      event.preventDefault();
-                    }
-                  };
-                })(piece));
+                  });
+                  piece.boarddiv.mousedown((function(piece){
+                    return function(event){
+                      if(!legends.dragging.activepiece){
+                        if(event.which==2){
+                          legends.kill(piece.armynumber,piece.power,piece.number,true);
+                          event.preventDefault();
+                        }
+                        else if(event.which==3){
+                          if(piece.revealed){
+                            legends.unreveal(piece.armynumber,piece.power,piece.number,true);
+                          }
+                          else{
+                            legends.reveal(piece.armynumber,piece.power,piece.number,true);
+                          }
+                        }
+                      }
+                    };
+                  })(piece));
+                }
               }
             }
           }
@@ -1030,16 +1140,226 @@ var legendsconstructor=function(){
       });
 
       legends.socket.on("pieceaction",function(data){
-        if(data.gameid==legends.server.gameid){
+        if(legends.games.status=="ingame"&&data.gameid==legends.gamedata.gameid&&data.authentication==legends.gamedata.authentication){
           legends[data.action](data.armynumber,data.power,data.number,false,data.x,data.y);
         }
       });
 
       legends.socket.on("errormessage",function(message){
-        alert("Error: "+message+".");
-        window.location.reload(false);
+        legends.handleerror(message);
       });
 
+      legends.socket.on("disconnect",function(message){
+        legends.handleerror("lost connection to server");
+      });
+
+    },
+
+    "handleerror":function(message){
+      alert("Error: "+message+".");
+      window.location.reload(false);
+    },
+
+    "designarmy":{
+      "sides":["good","evil"],
+      "presetarmycodes":{
+        "good":["28,30,52,58,63,70,73,76,77,81,82,84,85,88,93,7,22,29,37,43,46,49,55,66,74,79,87,91,94,101","28,84,93,66,87,10,40,44,50,53,59,69,80,90,100,63,81,7,19,41,47,56,62,71,78,83,89,92,95,102","10,40,100,92,73,85,88,29,79,13,48,54,60,68,72,83,30,76,82,22,91,36,39,42,45,51,57,64,65,86","52,43,1,5,8,11,14,15,17,20,23,24,32,96,98,58,46,49,55,3,6,9,12,18,21,31,33,61,75,97","5,8,11,14,17,23,32,97,48,54,19,77,2,25,99,20,96,75,39,42,45,51,57,64,80,90,4,16,26,34","25,15,24,98,9,12,18,31,44,50,53,41,62,89,35,99,16,6,21,13,65,86,59,47,56,78,74,27,38,67"],
+        "evil":["111,120,126,131,144,150,168,171,176,182,185,188,191,194,198,108,114,117,123,130,141,147,153,156,159,173,179,197,202,204","144,150,168,185,188,191,194,141,159,112,121,134,138,183,200,176,182,147,153,156,179,202,118,124,163,169,174,177,195,201","134,183,120,126,108,114,117,105,128,142,157,165,170,180,192,168,112,195,111,123,130,109,137,148,151,154,160,186,189,199","165,148,151,160,121,200,118,132,145,172,175,178,187,190,193,142,157,180,109,154,124,163,201,131,115,127,139,181,184,203","145,115,192,186,189,199,103,107,110,116,125,133,155,161,166,127,177,113,119,122,129,135,140,143,146,149,152,158,164,167","107,110,125,155,161,166,113,119,146,152,158,132,184,198,104,116,133,122,143,149,164,175,178,187,190,193,181,106,136,196"],
+        "goodexpansion":"211,212,213,214,214,214,214,214,215,215,215,216,217,217,217,217,217,218,218,218,219,219,219,220,221,221,221,221,221,222",
+        "evilexpansion":"223,224,225,225,225,226,226,226,227,227,227,228,228,228,229,229,229,230,230,230,231,231,231,232,233,233,233,233,233,234"
+      },
+      "randomarmycode":function(side,expansion){
+        var returnvalue=[];
+        for(var j=0;j<legends.powers.length;j++){
+          var power=legends.powers[j];
+          var pieceids=[];
+          for(var pieceid=0;pieceid<legends.piecedata.length;pieceid++){
+            if(legends.piecedata[pieceid]&&(expansion||(!legends.piecedata[pieceid].expansion))&&legends.piecedata[pieceid].side==side&&legends.piecedata[pieceid].power==power){
+              pieceids.push(pieceid);
+            }
+          }
+          for(var number=0;number<legends.powerquantities[power];number++){
+            returnvalue.push(pieceids[Math.floor(Math.random()*pieceids.length)]);
+          }
+        }
+        return returnvalue;
+      },
+      "selectpiecefunction":function(side,power,pieceid){
+        var number=legends.designarmy[side].boxpieces[power].numberadded%legends.powerquantities[power];
+        if(side=="good"&&power=="7"&&legends.designarmy[side].boxpieces[power].numberadded==3&&legends.designarmy[side].boxpieces["8"].pieceids.length==1&&legends.designarmy[side].boxpieces["8"].pieceids[0]==213){
+          legends.designarmy.specialeightmode=true;
+        }
+        if(side=="good"&&power=="4"&&legends.designarmy[side].boxpieces[power].numberadded==3&&legends.designarmy[side].boxpieces["5"].pieceids.length==1&&legends.designarmy[side].boxpieces["5"].pieceids[0]==216){
+          legends.designarmy.specialfivemode=true;
+        }
+        var newpower=power;
+        if(side=="good"&&((power=="7"&&legends.designarmy.specialeightmode)||(power=="4"&&legends.designarmy.specialfivemode))){
+          number=legends.designarmy[side].boxpieces[power].numberadded%5;
+          if(number>=3){
+            newpower=(power*1+1)+"";
+            number=number-2;
+            legends.designarmy[side].boxpieces[newpower].numberadded++;
+          }
+        }
+        if((!(side=="good"&&power=="8"&&legends.designarmy.specialeightmode))&&(!(side=="good"&&power=="5"&&legends.designarmy.specialfivemode))){
+          legends.designarmy[side].boxpieces[newpower].pieceids[number]=pieceid;
+          legends.designarmy[side].boxpieces[power].numberadded++;
+          legends.designarmy[side].boxpieces[newpower].divs[number].show().css({
+            "background-image":"url('"+legends.server.imagedirectory+"pieces/"+pieceid+".jpg')"
+          });
+          legends.alttext.setextra(legends.designarmy[side].boxpieces[newpower].divs[number],pieceid,true);
+        }
+        legends.designarmy.updatearmycode(side);
+      },
+      "updatearmycode":function(side){
+        var pieceids=[];
+        for(var j=0;j<legends.powers.length;j++){
+          var power=legends.powers[j];
+          for(var number=0;number<legends.powerquantities[power];number++){
+            var pieceid=legends.designarmy[side].boxpieces[power].pieceids[number];
+            if(pieceid){
+              pieceids.push(pieceid);
+            }
+          }
+        }
+        legends.designarmy[side].armycodetextarea.val(pieceids.join(","));
+      },
+      "updatefromarmycode":function(side){
+        legends.designarmy.specialeightmode=false;
+        legends.designarmy.specialfivemode=false;
+        for(var j=0;j<legends.powers.length;j++){
+          var power=legends.powers[j];
+          for(var number=0;number<legends.powerquantities[power];number++){
+            legends.designarmy[side].boxpieces[power].pieceids=[];
+            legends.designarmy[side].boxpieces[power].numberadded=0;
+            legends.designarmy[side].boxpieces[power].divs[number].hide().css({
+              "background-image":"none"
+            });
+          }
+        }
+        var pieceids=legends.designarmy[side].armycodetextarea.val().split(",");
+        for(var i=0;i<pieceids.length;i++){
+          var pieceid=pieceids[i]*1;
+          if(legends.piecedata[pieceid]&&legends.piecedata[pieceid].side==side){
+            legends.designarmy.selectpiecefunction(side,legends.piecedata[pieceid].power,pieceid);
+          }
+        }
+        legends.designarmy.updatearmycode(side);
+      },
+      "init":function(){
+        legends.designarmy.specialeightmode=false;
+        legends.designarmy.specialfivemode=false;
+        legends.designarmy.initbutton.remove();
+        for(var i=0;i<2;i++){
+          var side=legends.designarmy.sides[i];
+          legends.games.div.append($("<h3>"+side.substr(0,1).toUpperCase()+side.substr(1)+" army</h3>"));
+          legends.designarmy[side]={
+            "table":$("<table></table>").appendTo(legends.games.div),
+            "rows":[],
+            "imagecells":[],
+            "boxcell":$("<td rowspan=\""+legends.powers.length+"\"></td>").css({"padding-left":legends.styles.marginsize}),
+            "boxdiv":$("<div></div>").css({
+              "position":"relative",
+              "width":(legends.styles.armypiecewidth*6)+"px",
+              "height":(legends.styles.armypieceheight*5)+"px",
+              "background-image":"url('"+legends.server.imagedirectory+"box.png')",
+              "background-size":"100% 100%"
+            }),
+            "boxpieces":{},
+            "armycodetextarea":$("<textarea wrap=\"off\" rows=\"1\"></textarea>").css({"width":(legends.styles.armypiecewidth*6)+"px"}).change((function(side){
+              return function(event){
+                legends.designarmy.updatefromarmycode(side);
+              };
+            })(side)),
+            "armycodebuttonsp":$("<p></p>")
+          };
+          for(var j=0;j<legends.powers.length;j++){
+            var power=legends.powers[j];
+            legends.designarmy[side].rows[j]=$("<tr></tr>").appendTo(legends.designarmy[side].table);
+            legends.designarmy[side].rows[j].append($("<td></td>").html("<b>"+power+"</b>:").css({
+              "font-size":"1.2em",
+              "width":legends.styles.piecewidth+"px",
+              "height":legends.styles.pieceheight+"px"
+            }));
+            legends.designarmy[side].imagecells[j]=$("<td></td>").appendTo(legends.designarmy[side].rows[j]);
+            for(var pieceid=0;pieceid<legends.piecedata.length;pieceid++){
+              if(legends.piecedata[pieceid]&&legends.piecedata[pieceid].side==side&&legends.piecedata[pieceid].power==power){
+                legends.alttext.setextra($("<img src=\""+legends.server.imagedirectory+"pieces/"+pieceid+".jpg\">").appendTo(legends.designarmy[side].imagecells[j]).css({
+                  "margin":"2px",
+                  "width":legends.styles.piecewidth+"px",
+                  "height":legends.styles.pieceheight+"px",
+                  "border":legends.styles.bordersize+"px outset "+(side=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour),
+                  "vertical-align":"middle",
+                  "cursor":"pointer"
+                }).click((function(side,power,pieceid){
+                  return function(event){
+                    legends.designarmy.selectpiecefunction(side,power,pieceid);
+                    legends.designarmy.updatearmycode(side);
+                  };
+                })(side,power,pieceid)),pieceid,false);
+              }
+            }
+            if(j==0){
+              legends.designarmy[side].rows[j].append(legends.designarmy[side].boxcell);
+            }
+            legends.designarmy[side].boxpieces[power]={
+              "numberadded":0,
+              "pieceids":[],
+              "divs":[],
+            }
+            for(var number=0;number<legends.powerquantities[power];number++){
+              var coordinates=legends.getboxcoordinates(power,number);
+              legends.designarmy[side].boxpieces[power].divs[number]=$("<div></div>").appendTo(legends.designarmy[side].boxdiv).hide().css({
+                "position":"absolute",
+                "left":(coordinates.x*legends.styles.armypiecewidth)+"px",
+                "top":(coordinates.y*legends.styles.armypieceheight)+"px",
+                "width":(legends.styles.armypiecewidth-legends.styles.armypiecemarginsize*2)+"px",
+                "height":(legends.styles.armypieceheight-legends.styles.armypiecemarginsize*2)+"px",
+                "margin":legends.styles.armypiecemarginsize+"px",
+                "-webkit-border-radius":legends.styles.armypieceborderradius+"px",
+                "-moz-border-radius":legends.styles.armypieceborderradius+"px",
+                "border-radius":legends.styles.armypieceborderradius+"px",
+                "background-size":"100% 100%"
+              });
+              legends.alttext.setextra(legends.designarmy[side].boxpieces[power].divs[number],-1,false);
+            }
+          }
+          legends.designarmy[side].boxcell.append(legends.designarmy[side].boxdiv,$("<p></p>").append(document.createTextNode("Army code: "),$("<button>Select all</button>").click((function(side){
+            return function(event){
+              legends.designarmy[side].armycodetextarea.select();
+            };
+          })(side)),$("<br>"),legends.designarmy[side].armycodetextarea),legends.designarmy[side].armycodebuttonsp);
+          $("<button>Random non-expansion army</button>").appendTo(legends.designarmy[side].armycodebuttonsp).click((function(side){
+            return function(event){
+              legends.designarmy[side].armycodetextarea.val(legends.designarmy.randomarmycode(side,false));
+              legends.designarmy.updatefromarmycode(side);
+            };
+          })(side));
+          legends.designarmy[side].armycodebuttonsp.append($("<br>"));
+          $("<button>Random army</button>").appendTo(legends.designarmy[side].armycodebuttonsp).click((function(side){
+            return function(event){
+              legends.designarmy[side].armycodetextarea.val(legends.designarmy.randomarmycode(side,true));
+              legends.designarmy.updatefromarmycode(side);
+            };
+          })(side));
+          legends.designarmy[side].armycodebuttonsp.append($("<br>"));
+          for(var k=0;k<legends.designarmy.presetarmycodes[side].length;k++){
+            $("<button>Official army pack "+(k+1)+"</button>").appendTo(legends.designarmy[side].armycodebuttonsp).click((function(side,k){
+              return function(event){
+                legends.designarmy[side].armycodetextarea.val(legends.designarmy.presetarmycodes[side][k]);
+                legends.designarmy.updatefromarmycode(side);
+              };
+            })(side,k));
+            legends.designarmy[side].armycodebuttonsp.append($("<br>"));
+          }
+          $("<button>Official expansion army</button>").appendTo(legends.designarmy[side].armycodebuttonsp).click((function(side){
+            return function(event){
+              legends.designarmy[side].armycodetextarea.val(legends.designarmy.presetarmycodes[side+"expansion"]);
+              legends.designarmy.updatefromarmycode(side);
+            };
+          })(side));
+        }
+      }
     }
 
   }

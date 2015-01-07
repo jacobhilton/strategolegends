@@ -1,8 +1,5 @@
-alttext bottom of screen
-game name
-authentication (/choosable password) - game object with id, name, boardrotations, revealedarmynumber etc. below "armies":[]
-client on disconnect error thingy
-save to file
+//password
+//client on disconnect error thingy
+//server side validation of data (possibly create games on server, although potential for customisability is nice if not)
+//highlighting based on user
 army creation
-change double click to something else
-192.168.1.76

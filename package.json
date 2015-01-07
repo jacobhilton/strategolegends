@@ -3,7 +3,7 @@
   "description": "Stratego Legends",
   "version": "0.0.1",
   "dependencies": {
-    "express": "^4.4.5",
+    "express": "^4.10.2",
     "ws": "0.4.x"
   },
   "engines": {
