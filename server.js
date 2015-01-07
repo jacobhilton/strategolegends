@@ -21,8 +21,8 @@ fs.readFile(savefile,function(error,data){
       games[gamenumber].socket=io;
       games[gamenumber].gamedata=data[gamenumber].gamedata;
     }
-    http.listen(process.env.PORT||5000);
   }
+  http.listen(process.env.PORT||5000);console.log("OK");
 });
 var savegames=function(){
   var data=[];
