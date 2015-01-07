@@ -2,4 +2,4 @@
 //client on disconnect error thingy
 //server side validation of data (possibly create games on server, although potential for customisability is nice if not)
 //highlighting based on user
-army creation
+//army creation

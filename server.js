@@ -5,7 +5,7 @@ var io=require("socket.io")(http);
 app.use(express.static(__dirname+"/public"));
 var legendsconstructor=require("./public/legends.js");
 var fs=require("fs");
-var savefile="./public/games.json";
+var savefile=__dirname+"/public/games.json";
 var games=[];
 fs.readFile(savefile,function(error,data){
   if(error||data==""){
