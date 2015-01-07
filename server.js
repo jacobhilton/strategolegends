@@ -22,7 +22,7 @@ fs.readFile(savefile,function(error,data){
       games[gamenumber].gamedata=data[gamenumber].gamedata;
     }
   }
-  http.listen(process.env.PORT||5000);console.log("OK");
+  http.listen(process.env.PORT||5000);
 });
 var savegames=function(){
   var data=[];
