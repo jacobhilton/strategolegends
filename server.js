@@ -36,6 +36,7 @@ var savegames=function(){
   }
   fs.writeFile(savefile,JSON.stringify(data));
 }
+setInterval(savegames,180000);
 var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];
@@ -107,7 +108,6 @@ io.on("connection",function(socket){
         if(!games[data.gameid].server.waitforreply){
           socket.broadcast.emit("pieceaction",data);
         }
-        savegames();
       }
       catch(error){
         socket.emit("errormessage","invalid action");

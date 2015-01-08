@@ -27,6 +27,10 @@ var legendsconstructor=function(){
       "armypiecewidth":34,
       "armypiecemarginsize":2,
       "armypieceborderradius":6,
+      "designarmypieceheight":57,
+      "designarmypiecewidth":38,
+      "designarmypiecemarginsize":2,
+      "designarmypieceborderradius":6,
       "pieceopacity":0.35,
       "alttextthreshold":0.6,
       "alttextwait":200,
@@ -36,7 +40,6 @@ var legendsconstructor=function(){
         "bottom":20
       },
       "alttextcss":{
-        "font-family":"serif",
         "max-width":"400px",
         "background-color":"#ffff80",
         "border":"1px solid black",
@@ -282,7 +285,7 @@ var legendsconstructor=function(){
       {"name":"Plattenuis","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal Plattenuis(while on a plains space) to move a piece under your control adjcent to Plattenuis to any empty plains space.","colour":"purple","side":"evil","expansion":true}
     ],
 
-    "powers":["C","10","9","8","7","6","5","4","3","2","1","*"],
+    "powers":["10","9","8","7","6","5","4","3","2","1","*","C"],
 
     "powerquantities":{
       "C":1,
@@ -839,6 +842,7 @@ var legendsconstructor=function(){
         }
       },
       "create":{
+        "showingcoordinates":false,
         "players":[],
         "getarmycodes":function(){
           returnvalue=[];
@@ -867,7 +871,8 @@ var legendsconstructor=function(){
             "x2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8+4)+"\">").css({"width":"2.5em"}),
             "y2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"})
           };
-          legends.games.create.playerspan.append(document.createTextNode("Player "+(armynumber+1)+": player name "),legends.games.create.players[armynumber].playernameinput,document.createTextNode(" with "),legends.games.create.players[armynumber].sidedropdown,document.createTextNode(" army code "),legends.games.create.players[armynumber].codeinput,document.createTextNode(" at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(")"),$("<br>"));
+          legends.games.create.players[armynumber].coordinatespan=$("<span></span>").toggle(legends.games.create.showingcoordinates).append(document.createTextNode(" at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(")"));
+          legends.games.create.playerspan.append(document.createTextNode("Player "+(armynumber+1)+": player name "),legends.games.create.players[armynumber].playernameinput,document.createTextNode(" with "),legends.games.create.players[armynumber].sidedropdown,document.createTextNode(" army code "),legends.games.create.players[armynumber].codeinput,legends.games.create.players[armynumber].coordinatespan,$("<br>"));
           legends.games.create.players[armynumber].button=$("<button></button>").text("Create and join as Player "+(armynumber+1)).appendTo(legends.games.create.joinspan).click((function(armynumber){
             return function(event){
               legends.games.create.creategame(armynumber,legends.games.create.boardrotationdropdown.val());
@@ -940,12 +945,19 @@ var legendsconstructor=function(){
         var boardrotationdropdownhtml="<select><option value=\"default\">default</option><option value=\"2\">north</option><option value=\"3\">east</option><option value=\"0\">south</option><option value=\"1\">west</option></select>";
         if(legends.games.status=="init"){
           legends.games.status="lobby";
-          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"391px","margin-left":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<p>Left-click on pieces to move them, right-click to reveal them to your opponents, and either drop them off the board or middle-click to move them to the box.</p><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>").css({"clear":"both"}));
+          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"571px","margin-left":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<p>Left-click on pieces to move them, right-click to reveal them to your opponents, and either drop them off the board or middle-click to move them to the box.</p><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>"));
           legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.playerspan=$("<span></span>").appendTo(legends.games.create.playerp);
           legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">");
           legends.games.create.playerspan.append(document.createTextNode("Game name: "),legends.games.create.gamenameinput,$("<br>"));
-          legends.games.create.addplayerbutton=$("<button>Add a player</button>").appendTo(legends.games.create.playerp).click(legends.games.create.addplayer);
+          legends.games.create.playerp.append($("<button>Add a player</button>").click(legends.games.create.addplayer));
+          legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append(document.createTextNode(" "),$("<button>Edit army coordinates</button>").click(function(event){
+            legends.games.create.showingcoordinates=true;
+            for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
+              legends.games.create.players[armynumber].coordinatespan.show();
+            }
+            legends.games.create.editcoordinatespan.hide();
+          }));
           legends.games.create.joinp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.joinspan=$("<span></span>").appendTo(legends.games.create.joinp);
           legends.games.create.observerbutton=$("<button>Create and join as an observer</button>").appendTo(legends.games.create.joinp).click(function(event){
@@ -1185,7 +1197,7 @@ var legendsconstructor=function(){
         }
         return returnvalue;
       },
-      "selectpiecefunction":function(side,power,pieceid){
+      "selectpiece":function(side,power,pieceid){
         var number=legends.designarmy[side].boxpieces[power].numberadded%legends.powerquantities[power];
         if(side=="good"&&power=="7"&&legends.designarmy[side].boxpieces[power].numberadded==3&&legends.designarmy[side].boxpieces["8"].pieceids.length==1&&legends.designarmy[side].boxpieces["8"].pieceids[0]==213){
           legends.designarmy.specialeightmode=true;
@@ -1206,11 +1218,23 @@ var legendsconstructor=function(){
           legends.designarmy[side].boxpieces[newpower].pieceids[number]=pieceid;
           legends.designarmy[side].boxpieces[power].numberadded++;
           legends.designarmy[side].boxpieces[newpower].divs[number].show().css({
-            "background-image":"url('"+legends.server.imagedirectory+"pieces/"+pieceid+".jpg')"
+            "background-image":"url('"+legends.server.imagedirectory+"pieces/"+pieceid+".jpg')",
+            "cursor":"pointer"
           });
           legends.alttext.setextra(legends.designarmy[side].boxpieces[newpower].divs[number],pieceid,true);
         }
         legends.designarmy.updatearmycode(side);
+      },
+      "removepiece":function(side,pieceid){
+        var allids=legends.designarmy[side].armycodetextarea.val().split(",");
+        for(var i=0;i<allids.length;i++){
+          if(allids[i]==pieceid){
+            allids.splice(i,1);
+            i=allids.length;
+          }
+        }
+        legends.designarmy[side].armycodetextarea.val(allids.join(","));
+        legends.designarmy.updatefromarmycode(side);
       },
       "updatearmycode":function(side){
         var pieceids=[];
@@ -1234,6 +1258,7 @@ var legendsconstructor=function(){
             legends.designarmy[side].boxpieces[power].pieceids=[];
             legends.designarmy[side].boxpieces[power].numberadded=0;
             legends.designarmy[side].boxpieces[power].divs[number].hide().css({
+              "pointer":"auto",
               "background-image":"none"
             });
           }
@@ -1242,7 +1267,7 @@ var legendsconstructor=function(){
         for(var i=0;i<pieceids.length;i++){
           var pieceid=pieceids[i]*1;
           if(legends.piecedata[pieceid]&&legends.piecedata[pieceid].side==side){
-            legends.designarmy.selectpiecefunction(side,legends.piecedata[pieceid].power,pieceid);
+            legends.designarmy.selectpiece(side,legends.piecedata[pieceid].power,pieceid);
           }
         }
         legends.designarmy.updatearmycode(side);
@@ -1261,13 +1286,13 @@ var legendsconstructor=function(){
             "boxcell":$("<td rowspan=\""+legends.powers.length+"\"></td>").css({"padding-left":legends.styles.marginsize}),
             "boxdiv":$("<div></div>").css({
               "position":"relative",
-              "width":(legends.styles.armypiecewidth*6)+"px",
-              "height":(legends.styles.armypieceheight*5)+"px",
+              "width":(legends.styles.designarmypiecewidth*6)+"px",
+              "height":(legends.styles.designarmypieceheight*5)+"px",
               "background-image":"url('"+legends.server.imagedirectory+"box.png')",
               "background-size":"100% 100%"
             }),
             "boxpieces":{},
-            "armycodetextarea":$("<textarea wrap=\"off\" rows=\"1\"></textarea>").css({"width":(legends.styles.armypiecewidth*6)+"px"}).change((function(side){
+            "armycodetextarea":$("<textarea wrap=\"off\" rows=\"1\"></textarea>").css({"width":(legends.styles.designarmypiecewidth*6)+"px"}).change((function(side){
               return function(event){
                 legends.designarmy.updatefromarmycode(side);
               };
@@ -1294,7 +1319,7 @@ var legendsconstructor=function(){
                   "cursor":"pointer"
                 }).click((function(side,power,pieceid){
                   return function(event){
-                    legends.designarmy.selectpiecefunction(side,power,pieceid);
+                    legends.designarmy.selectpiece(side,power,pieceid);
                     legends.designarmy.updatearmycode(side);
                   };
                 })(side,power,pieceid)),pieceid,false);
@@ -1312,22 +1337,47 @@ var legendsconstructor=function(){
               var coordinates=legends.getboxcoordinates(power,number);
               legends.designarmy[side].boxpieces[power].divs[number]=$("<div></div>").appendTo(legends.designarmy[side].boxdiv).hide().css({
                 "position":"absolute",
-                "left":(coordinates.x*legends.styles.armypiecewidth)+"px",
-                "top":(coordinates.y*legends.styles.armypieceheight)+"px",
-                "width":(legends.styles.armypiecewidth-legends.styles.armypiecemarginsize*2)+"px",
-                "height":(legends.styles.armypieceheight-legends.styles.armypiecemarginsize*2)+"px",
-                "margin":legends.styles.armypiecemarginsize+"px",
-                "-webkit-border-radius":legends.styles.armypieceborderradius+"px",
-                "-moz-border-radius":legends.styles.armypieceborderradius+"px",
-                "border-radius":legends.styles.armypieceborderradius+"px",
+                "left":(coordinates.x*legends.styles.designarmypiecewidth)+"px",
+                "top":(coordinates.y*legends.styles.designarmypieceheight)+"px",
+                "width":(legends.styles.designarmypiecewidth-legends.styles.designarmypiecemarginsize*2)+"px",
+                "height":(legends.styles.designarmypieceheight-legends.styles.designarmypiecemarginsize*2)+"px",
+                "margin":legends.styles.designarmypiecemarginsize+"px",
+                "-webkit-border-radius":legends.styles.designarmypieceborderradius+"px",
+                "-moz-border-radius":legends.styles.designarmypieceborderradius+"px",
+                "border-radius":legends.styles.designarmypieceborderradius+"px",
                 "background-size":"100% 100%"
-              });
+              }).click((function(side,power,number){
+                return function(event){
+                  var pieceid=legends.designarmy[side].boxpieces[power].pieceids[number];
+                  if(pieceid){
+                    legends.designarmy.removepiece(side,pieceid);
+                  }
+                };
+              })(side,power,number));
               legends.alttext.setextra(legends.designarmy[side].boxpieces[power].divs[number],-1,false);
             }
           }
-          legends.designarmy[side].boxcell.append(legends.designarmy[side].boxdiv,$("<p></p>").append(document.createTextNode("Army code: "),$("<button>Select all</button>").click((function(side){
+          legends.designarmy[side].boxcell.append(legends.designarmy[side].boxdiv,$("<button>Clear all</button>").click((function(side){
+            return function(event){
+              if(confirm("Are you sure?")){
+                legends.designarmy[side].armycodetextarea.val("");
+                legends.designarmy.updatefromarmycode(side);
+              }
+            };
+          })(side)),$("<p></p>").append(document.createTextNode("Army code: "),$("<button>Select all</button>").click((function(side){
             return function(event){
               legends.designarmy[side].armycodetextarea.select();
+            };
+          })(side)),$("<button>Use code</button>").click((function(side){
+            return function(event){
+              for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
+                if(legends.games.create.players[armynumber].sidedropdown.val()==side){
+                  if(confirm("This will overwrite the army code for "+legends.games.create.players[armynumber].playernameinput.val()+". Are you sure you would like to continue?")){
+                    legends.games.create.players[armynumber].codeinput.val(legends.designarmy[side].armycodetextarea.val());
+                  }
+                  armynumber=legends.games.create.players.length;
+                }
+              }
             };
           })(side)),$("<br>"),legends.designarmy[side].armycodetextarea),legends.designarmy[side].armycodebuttonsp);
           $("<button>Random non-expansion army</button>").appendTo(legends.designarmy[side].armycodebuttonsp).click((function(side){
