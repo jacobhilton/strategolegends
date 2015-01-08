@@ -36,7 +36,7 @@ var savegames=function(){
   }
   fs.writeFile(savefile,JSON.stringify(data));
 }
-setInterval(savegames,180000);
+setInterval(savegames,1200000);
 var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];
