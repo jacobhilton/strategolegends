@@ -38,7 +38,8 @@ var savegames=function(){
 }*/
 var pg=require('pg');
 var escape=require('pg-escape');
-pg.connect(process.env.DATABASE_URL,function(err,client,done){
+var databaseurl=process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres";
+pg.connect(databaseurl,function(err,client,done){
   client.query("SELECT value FROM data WHERE type='strategolegends'",function(err,result){
     done();
     if(err){
@@ -67,7 +68,7 @@ pg.connect(process.env.DATABASE_URL,function(err,client,done){
   });
 });
 var savegames=function(){
-  pg.connect(process.env.DATABASE_URL,function(err,client,done){
+  pg.connect(databaseurl,function(err,client,done){
     var data=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
       if(games[gamenumber]){
@@ -130,7 +131,7 @@ io.on("connection",function(socket){
       games[data.gameid]=false;
       var nogamesleft=true;
       for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-        if(games[data.gameid]){
+        if(games[gamenumber]){
           nogamesleft=false;
         }
       }
