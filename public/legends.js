@@ -11,6 +11,7 @@ var legendsconstructor=function(){
     },
 
     "styles":{
+      "headerwidth":600,
       "marginsize":20,
       "tilesize":80,
       "pieceheight":54,
@@ -860,7 +861,7 @@ var legendsconstructor=function(){
               };
             })(armynumber)),
             "sidedropdown":$("<select><option value=\"good\""+(armynumber%2==0?" selected":"")+">good</option><option value=\"evil\""+(armynumber%2==0?"":" selected")+">evil</select>"),
-            "codeinput":$("<input type=\"text\" size=\"25\" value=\"\">"),
+            "codeinput":$("<input type=\"text\" size=\"25\" value=\""+legends.designarmy.presetarmycodes[armynumber%2==0?"good":"evil"][Math.floor(Math.random()*legends.designarmy.presetarmycodes[armynumber%2==0?"good":"evil"].length)]+"\">"),
             "x1input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8)+"\">").css({"width":"2.5em"}),
             "y1input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"}),
             "x2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8+4)+"\">").css({"width":"2.5em"}),
@@ -939,7 +940,7 @@ var legendsconstructor=function(){
         var boardrotationdropdownhtml="<select><option value=\"default\">default</option><option value=\"2\">north</option><option value=\"3\">east</option><option value=\"0\">south</option><option value=\"1\">west</option></select>";
         if(legends.games.status=="init"){
           legends.games.status="lobby";
-          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").text("Stratego Legends").css({"text-align":"center"}),$("<h2>How to play</h2>"),$("<p>Left-click on pieces to move them, right-click to reveal them, and either drop them off the board or middle-click to move them to the box.</p><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>"));
+          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"/header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"391px","margin-left":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<p>Left-click on pieces to move them, right-click to reveal them to your opponents, and either drop them off the board or middle-click to move them to the box.</p><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>").css({"clear":"both"}));
           legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.playerspan=$("<span></span>").appendTo(legends.games.create.playerp);
           legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">");
@@ -1362,7 +1363,7 @@ var legendsconstructor=function(){
       }
     }
 
-  }
+  };
 
   for(var property in legendsproperties){
     if(legendsproperties.hasOwnProperty(property)){
