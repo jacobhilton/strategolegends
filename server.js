@@ -50,6 +50,8 @@ app.get('/db', function (request, response) {
   });
 });
 
+var savegames=function(){};
+
 setInterval(savegames,1200000);
 var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
