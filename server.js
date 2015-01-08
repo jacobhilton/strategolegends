@@ -36,22 +36,52 @@ var savegames=function(){
   }
   fs.writeFile(savefile,JSON.stringify(data));
 }*/
-var pg = require('pg');
-
-app.get('/db', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-    client.query('SELECT * FROM data', function(err, result) {
-      console.log('done');
-      if (err)
-       { console.error(err); response.send("Error " + err); }
-      else
-       { response.send(result.rows); }
-    });
+var pg=require('pg');
+var escape=require('pg-escape');
+pg.connect(process.env.DATABASE_URL,function(err,client,done){
+  client.query("SELECT value FROM data WHERE type='strategolegends'",function(err,result){
+    done();
+    if(err){
+      savegames=function(){};
+    }
+    else if(result.rows.length==0){
+      savegames();
+    }
+    else{
+      try{
+        var data=JSON.parse(result.rows[0].value);
+        for(var gamenumber=0;gamenumber<data.length;gamenumber++){
+          games[gamenumber]=new legendsconstructor();
+          games[gamenumber].armies=data[gamenumber].armies;
+          games[gamenumber].board=data[gamenumber].board;
+          games[gamenumber].games.status="server";
+          games[gamenumber].socket=io;
+          games[gamenumber].gamedata=data[gamenumber].gamedata;
+        }
+      }
+      catch(error){
+        savegames();
+      }
+    }
+    http.listen(process.env.PORT||5000);
   });
 });
-
-var savegames=function(){};
-
+var savegames=function(){
+  pg.connect(process.env.DATABASE_URL,function(err,client,done){
+    var data=[];
+    for(var gamenumber=0;gamenumber<games.length;gamenumber++){
+      if(games[gamenumber]){
+        data[gamenumber]={"armies":games[gamenumber].armies,"board":games[gamenumber].board,"gamedata":games[gamenumber].gamedata};
+      }
+      else{
+        data[gamenumber]=false;
+      }
+    }
+    client.query(escape("UPDATE data SET value=%L WHERE type='strategolegends'",JSON.stringify(data)),function(err,result){
+      done();
+    });
+  });
+};
 setInterval(savegames,1200000);
 var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
