@@ -82,6 +82,15 @@ io.on("connection",function(socket){
   socket.on("deletegame",function(data){
     if(data&&data.gameid>-1&&games[data.gameid]&&data.authentication==games[data.gameid].gamedata.authentication){
       games[data.gameid]=false;
+      var nogamesleft=true;
+      for(var gamenumber=0;gamenumber<games.length;gamenumber++){
+        if(games[data.gameid]){
+          nogamesleft=false;
+        }
+      }
+      if(nogamesleft){
+        games=[];
+      }
       emitgameslist(io);
       savegames();
     }
