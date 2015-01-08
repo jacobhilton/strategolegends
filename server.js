@@ -36,8 +36,8 @@ var savegames=function(){
   }
   fs.writeFile(savefile,JSON.stringify(data));
 }*/
-var pg=require('pg');
-var escape=require('pg-escape');
+var pg=require("pg");
+var escape=require("pg-escape");
 var databaseurl=process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres";
 pg.connect(databaseurl,function(err,client,done){
   client.query("SELECT value FROM data WHERE type='strategolegends'",function(err,result){
