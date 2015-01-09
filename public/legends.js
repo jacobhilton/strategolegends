@@ -63,7 +63,7 @@ var legendsconstructor=function(){
       {"name":"Migol's Royal Guard","power":"6","race":"dwarf","abilities":"<i>Ability</i>: If King Migol is attacked and destroyed while adjacent to Migol's Royal Guard, you may reveal and destroy Migol's Royal Guard and immediately replace him with King Migol (in the space that Migol's Royal Royal Guard formerly occupied).","colour":"green","side":"good","expansion":false},
       {"name":"Wannok","power":"6","race":"sprite","abilities":"<i>Innate</i>: +1 on forest spaces.<br><i>Action</i>: Flying","colour":"green","side":"good","expansion":false},
       {"name":"Frodnaj Archer","power":"5","race":"elf","abilities":"<i>Action</i>: Distance Strike","colour":"green","side":"good","expansion":false},
-      {"name":"Poy","power":"5","race":"dwarf","abilities":"<i>Innate</i>: +1 on mountain spaces.<br><i>Ability</i>: If Poy is revealed by a piece with Distance Strike, Poy is not destroyed. Instead, destroy the piece with Distance Strike.","colour":"green","side":"good","expansion":false},
+      {"name":"Poy","power":"5","race":"dwarf","abilities":"<i>Innate</i>: +1 on mountain spaces.<br><i>Ability</i>: If Poy is revealed by a piece with Distance Strike Action, Poy is not destroyed. Instead, the piece with Distance Strike is destroyed.","colour":"green","side":"good","expansion":false},
       {"name":"Grundin","power":"5","race":"ranger","abilities":"<i>Innate</i>: +2 on forest spaces.","colour":"green","side":"good","expansion":false},
       {"name":"Relfreod Archer","power":"4","race":"elf","abilities":"<i>Action</i>: Distance Strike","colour":"green","side":"good","expansion":false},
       {"name":"Dwarven Hero","power":"4","race":"dwarf","abilities":"<i>Action</i>: Surround","colour":"green","side":"good","expansion":false},
@@ -100,15 +100,15 @@ var legendsconstructor=function(){
       {"name":"Hillstone Curate","power":"5","race":"cleric","abilities":"<i>Innate</i>: +2 on mountain spaces.","colour":"gold","side":"good","expansion":false},
       {"name":"Holy Knight","power":"5","race":"paladin","abilities":"<i>Innate</i>: +4 on town spaces.<br><i>Action</i>: Quickness","colour":"gold","side":"good","expansion":false},
       {"name":"Redillian Evoker","power":"4","race":"wizard","abilities":"<i>Action</i>: Charging<br><i>Death Curse</i>: All Wizard pieces get +1.","colour":"gold","side":"good","expansion":false},
-      {"name":"Noble Cleric","power":"4","race":"cleric","abilities":"<i>Ability</i>: After Noble Cleric makes a successful attack, yu may destroy Noble cleric to place one ofyour previously destroyed pieces on the space that Novle Clice occpied.","colour":"gold","side":"good","expansion":false},
+      {"name":"Noble Cleric","power":"4","race":"cleric","abilities":"<i>Ability</i>: After Noble Cleric makes a successful attack, you may destroy Noble Cleric to place one of your previously destroyed pieces on the space that Noble Cleric occupied.","colour":"gold","side":"good","expansion":false},
       {"name":"Ulaniva Crusader","power":"4","race":"paladin","abilities":"<i>Innate</i>: +2 on desert spaces.<br><i>Action</i>: Move from desert to desert space.","colour":"gold","side":"good","expansion":false},
       {"name":"Pearl Wizard","power":"3","race":"wizard","abilities":"<i>Innate</i>: Dispel Magic<br><i>Action</i>: Charging","colour":"gold","side":"good","expansion":false},
       {"name":"Jillus","power":"3","race":"cleric","abilities":"<i>Death Curse</i>: All Clerics gain Dispel Magic","colour":"gold","side":"good","expansion":false},
       {"name":"Ulaniva Defender","power":"3","race":"paladin","abilities":"<i>Innate</i>: +3 on desert spaces.<br><i>Innate</i>: Dispel Magic<br><i>Action</i>: Quickness","colour":"gold","side":"good","expansion":false},
       {"name":"Jenzik","power":"2","race":"wizard","abilities":"<i>Action</i>: Teleport","colour":"gold","side":"good","expansion":false},
       {"name":"Hillstone Acolyte","power":"2","race":"cleric","abilities":"<i>Innate</i>: +2 on mountain spaces.<br><i>Action</i>: Charging","colour":"gold","side":"good","expansion":false},
-      {"name":"Urgwaine's Knights","power":"2","race":"paladin","abilities":"<i>Ability</i>: Reveal and destroy Urgwaine's Knights to give anadjacent Paladin +2 until the end of the turn. Reveal the adjacent Paladin.","colour":"gold","side":"good","expansion":false},
-      {"name":"Psychic Devourer","power":"1","race":"wizard","abilities":"<i>Innate</i>: If Psychic Devourer attacks, guess the name of the defending piece. If you are correct,that piece and Psychic Devourer are destroyed. If you are wrong, destroy Psychic Devourer.","colour":"gold","side":"good","expansion":false},
+      {"name":"Urgwaine's Knights","power":"2","race":"paladin","abilities":"<i>Ability</i>: Reveal and destroy Urgwaine's Knights to give an adjacent Paladin +2 until the end of the turn. Reveal the adjacent Paladin.","colour":"gold","side":"good","expansion":false},
+      {"name":"Psychic Devourer","power":"1","race":"wizard","abilities":"<i>Innate</i>: If Psychic Devourer attacks, guess the name of the defending piece. If you are correct, that piece and Psychic Devourer are destroyed. If you are wrong, destroy Psychic Devourer.","colour":"gold","side":"good","expansion":false},
       {"name":"Reb the Zombie Slayer","power":"1","race":"cleric","abilities":"<i>Innate</i>: If Reb attacks a piece with a base strength of 10, that piece is destroyed.<br><i>Innate</i>: If Reb attacks any Zombie, destroy that Zombie.","colour":"gold","side":"good","expansion":false},
       {"name":"Holy Light","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannot attack<br><i>Magic</i>: If Holy Light is attacked, destroy it and its attacker.","colour":"gold","side":"good","expansion":false},
       {"name":"Holy Vision","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannont attack<br><i>Magic</i>: If Holy vision is attacked, it is destroyed and you may look at any 2 pieces.","colour":"gold","side":"good","expansion":false},
@@ -157,7 +157,7 @@ var legendsconstructor=function(){
       {"name":"Crevcor","power":"9","race":"ogre","abilities":"<i>Death Curse</i>: All Silver pieces get +1.","colour":"silver","side":"evil","expansion":false},
       {"name":"Evit","power":"8","race":"titan","abilities":"<i>Ability</i>: At the end of your turn, you may reveal and destroy Evit to take another turn.","colour":"silver","side":"evil","expansion":false},
       {"name":"Girr","power":"8","race":"giant","abilities":"<i>Action</i>: Vision","colour":"silver","side":"evil","expansion":false},
-      {"name":"Cave Beast","power":"8","race":"beast","abilities":"<i>Action</i>: Reveal Cave Beast (while on a Mountain space) to move it to any empty Mountain space.","colour":"silver","side":"evil","expansion":false},
+      {"name":"Cave Beast","power":"8","race":"beast","abilities":"<i>Action</i>: Reveal Cave Beast (while on a mountain space) to move it to any empty mountain space.","colour":"silver","side":"evil","expansion":false},
       {"name":"Akillon","power":"7","race":"titan","abilities":"<i>Innate</i>: Berzerk","colour":"silver","side":"evil","expansion":false},
       {"name":"Great Shaman","power":"7","race":"giant","abilities":"<i>Action</i>: Reveal and destroy Great Shaman to place any number of destroyed Silver Magic Pieces onto any empty spaces.","colour":"silver","side":"evil","expansion":false},
       {"name":"Medusa","power":"7","race":"gorgon","abilities":"<i>Action</i>: Reveal and destroy Medusa to destroy all adjacent pieces.","colour":"silver","side":"evil","expansion":false},
@@ -168,14 +168,14 @@ var legendsconstructor=function(){
       {"name":"Rock Giant","power":"5","race":"giant","abilities":"<i>Action</i>: Distance Strike","colour":"silver","side":"evil","expansion":false},
       {"name":"Enchanted Shield","power":"5","race":"weapon","abilities":"<i>Ability</i>: Reveal and destroy Enchanted Shield to give an adjacent piece +2 until the end of the turn. Reveal the adjacent piece.","colour":"silver","side":"evil","expansion":false},
       {"name":"Colossor","power":"4","race":"titan","abilities":"<i>Innate</i>: +3 against pieces with Flying Action.<br><i>Ability</i>: If Colossor is revealed by a piece with Distance Strike, Colossor is not destroyed. Instead, destroy the piece with Distance Strike.","colour":"silver","side":"evil","expansion":false},
-      {"name":"Mist Giant","power":"4","race":"giant","abilities":"<i>Innate</i>: +2 while adjacent to a water Space.","colour":"silver","side":"evil","expansion":false},
-      {"name":"H'caor Ogre Mage","power":"4","race":"ogre","abilities":"<i>Innate</i>: +2 on mountain spaces.<br><i>Action</i>: Reveal H'caor (while on a Mountain space) to move him to any other empty mountain space.","colour":"silver","side":"evil","expansion":false},
+      {"name":"Mist Giant","power":"4","race":"giant","abilities":"<i>Innate</i>: +2 while adjacent to a water space.","colour":"silver","side":"evil","expansion":false},
+      {"name":"H'caor Ogre Mage","power":"4","race":"ogre","abilities":"<i>Innate</i>: +2 on mountain spaces.<br><i>Action</i>: Reveal H'caor (while on a mountain space) to move him to any other empty mountain space.","colour":"silver","side":"evil","expansion":false},
       {"name":"Marr","power":"3","race":"titan","abilities":"<i>Innate</i>: +2 on mountain spaces.<br><i>Action</i>: Charging","colour":"silver","side":"evil","expansion":false},
       {"name":"Dumes","power":"3","race":"giant","abilities":"<i>Ability</i>: Dumes may attack a piece under your control.<br><i>Action</i>: Charging","colour":"silver","side":"evil","expansion":false},
       {"name":"Linghorn","power":"3","race":"minotaur","abilities":"<i>Innate</i>: Dispel Magic<br><i>Action</i>: Slashing","colour":"silver","side":"evil","expansion":false},
       {"name":"Smektor","power":"2","race":"titan","abilities":"<i>Innate</i>: Dispel Magic<br><i>Action</i>: Charging","colour":"silver","side":"evil","expansion":false},
       {"name":"Uzelis","power":"2","race":"giant","abilities":"<i>Innate</i>: If Uzelis attacks a Sprite piece, destroy the Sprite piece.","colour":"silver","side":"evil","expansion":false},
-      {"name":"Gnarak","power":"2","race":"beast","abilities":"<i>Innate</i>: +7 on Mountain Spaces.<br><i>Innate</i>: After Gnarak successfully attacks, you must choose an opponent to move Gnarak onto any empty space.","colour":"silver","side":"evil","expansion":false},
+      {"name":"Gnarak","power":"2","race":"beast","abilities":"<i>Innate</i>: +7 on mountain Spaces.<br><i>Innate</i>: After Gnarak successfully attacks, you must choose an opponent to move Gnarak onto any empty space.","colour":"silver","side":"evil","expansion":false},
       {"name":"Gwarf","power":"1","race":"giant","abilities":"<i>Innate</i>: If Gwarf attacks a piece with a base strength of 10, the attacked piece is destroyed.","colour":"silver","side":"evil","expansion":false},
       {"name":"Cerebin","power":"1","race":"beast","abilities":"<i>Innate</i>: If Cerebin attacks a piece with a base strength of 10, the attacked piece is destroyed.<br><i>Action</i>: Charging","colour":"silver","side":"evil","expansion":false},
       {"name":"Lightning Bolt","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Lightning Bolt is attacked, destroy it and its attacker. Any pieces on the 2 spaces in front of Lightning Bolt (non-label side) are also destroyed.","colour":"silver","side":"evil","expansion":false},
@@ -184,7 +184,7 @@ var legendsconstructor=function(){
       {"name":"Eternal Idol","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Eternal Idol is attacked, destroy it and its attacker.<br><i>Death Curse</i>: When this Death Curse ends, place Eternal Idol on any empty space.","colour":"silver","side":"evil","expansion":false},
       {"name":"Wheel of Energy","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal and destroy Wheel of Energy to give an adjacent piece +1 until the end of the turn. Reveal the adjacent piece affected.<br><i>Magic</i>: If Wheel of Energy is attacked, destroy it and its attacker.","colour":"silver","side":"evil","expansion":false},
       {"name":"Titan Castle","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal Titan Castle to give an adjacent Titan +1 until the end of the turn. Use this ability once per turn. Reveal the Titan piece affected.","colour":"silver","side":"evil","expansion":false},
-      {"name":"Ogre Fort","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal Ogre Fort to reveal and place an Ogre you control on any empty Mountain space adjacent to Ogre Fort.","colour":"silver","side":"evil","expansion":false},
+      {"name":"Ogre Fort","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal Ogre Fort to reveal and place an Ogre you control on any empty mountain space adjacent to Ogre Fort.","colour":"silver","side":"evil","expansion":false},
       {"name":"Oppolifnas","power":"10","race":"dragon","abilities":"<i>Ability</i>: Reveal Oppolifnas and an adjacent piece you control to give the adjacent piece Flying Action until the end of the turn.<br><i>Action</i>: Flying","colour":"red","side":"evil","expansion":false},
       {"name":"Lord Esenwein","power":"10","race":"vampire","abilities":"<i>Ability</i>: Reveal Lord Esenwein and any Vampire to give that Vampire Flying Action until the end of the turn.","colour":"red","side":"evil","expansion":false},
       {"name":"Lord of Bones","power":"9","race":"skeleton","abilities":"<i>Ability</i>: Reveal Lord of Bones and any Skeleton to give that Skeleton Charging Action until the end of the turn.","colour":"red","side":"evil","expansion":false},
@@ -194,10 +194,10 @@ var legendsconstructor=function(){
       {"name":"Mummy","power":"8","race":"zombie","abilities":"<i>Innate</i>: +1 on desert spaces.","colour":"red","side":"evil","expansion":false},
       {"name":"Renil","power":"7","race":"vampire","abilities":"<i>Innate</i>: Dispel Magic<br><i>Action</i>: Slashing","colour":"red","side":"evil","expansion":false},
       {"name":"Moridium","power":"7","race":"angel","abilities":"<i>Innate</i>: If Moridium is revealed by a piece with the Vision Action, the piece with Vision is destroyed.<br><i>Action</i>: Flying","colour":"red","side":"evil","expansion":false},
-      {"name":"Murkis","power":"7","race":"zombie","abilities":"<i>Action</i>: Reveal Murkis (while on a Marsh space) to move it to any empty Marsh space.","colour":"red","side":"evil","expansion":false},
+      {"name":"Murkis","power":"7","race":"zombie","abilities":"<i>Action</i>: Reveal Murkis (while on a narsh space) to move it to any empty marsh space.","colour":"red","side":"evil","expansion":false},
       {"name":"Keelian","power":"6","race":"vampire","abilities":"<i>Innate</i>: Dispel Magic<br><i>Action</i>: Quickness","colour":"red","side":"evil","expansion":false},
       {"name":"Scythe","power":"6","race":"skeleton","abilities":"<i>Innate</i>: +2 against pieces with Flying Action.<br><i>Action</i>: Flying","colour":"red","side":"evil","expansion":false},
-      {"name":"Lingering Death","power":"6","race":"zombie","abilities":"<i>Action</i>: Reveal Lingering Death (while on a Marsh space) to move it to any empty Marsh space.","colour":"red","side":"evil","expansion":false},
+      {"name":"Lingering Death","power":"6","race":"zombie","abilities":"<i>Action</i>: Reveal Lingering Death (while on a marsh space) to move it to any empty Marsh space.","colour":"red","side":"evil","expansion":false},
       {"name":"Crimson","power":"5","race":"werewolf","abilities":"<i>Action</i>: Slashing","colour":"red","side":"evil","expansion":false},
       {"name":"Sinakus","power":"5","race":"skeleton","abilities":"<i>Innate</i>: +1 on marsh spaces.<br><i>Action</i>: Quickness","colour":"red","side":"evil","expansion":false},
       {"name":"Giant Zombie Rat","power":"5","race":"zombie","abilities":"<i>Innate</i>: +2 on marsh spaces.","colour":"red","side":"evil","expansion":false},
@@ -215,13 +215,13 @@ var legendsconstructor=function(){
       {"name":"Zombie Grave","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: : If Zombie Grave is attacked, destroy it and its attacker. Replace Zombie Grave with any destroyed Zombie under your control. (The destroyed Zombie piece has been brought back to life.)","colour":"red","side":"evil","expansion":false},
       {"name":"Skeleton Grave","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Skeleton Grave is attacked, destroy it and its attacker. Replace Skeleton Grave with any destroyed Skeleton. The destroyed Skeleton piece has been brought back to life.","colour":"red","side":"evil","expansion":false},
       {"name":"Decay","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: : Reveal and destroy Decay to destroy all adjacent pieces.<br><i>Magic</i>: : If Decay is attacked, destroy it and its attacker.","colour":"red","side":"evil","expansion":false},
-      {"name":"Skull of Gorion","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Skull of Gorion is attacked, destroy it and its attacker. If the attacker is a Gold piece, you may destroy any piece on a Marsh space.","colour":"red","side":"evil","expansion":false},
+      {"name":"Skull of Gorion","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Skull of Gorion is attacked, destroy it and its attacker. If the attacker is a Gold piece, you may destroy any piece on a marsh space.","colour":"red","side":"evil","expansion":false},
       {"name":"Fire Wall","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: : Reveal and destroy Fire Wall to reveal an opponent's piece adjacent to Fire Wall. That piece gets -2 until the end of the turn.<br><i>Magic</i>: : If Fire Wall is attacked, destroy it and its attacker.","colour":"red","side":"evil","expansion":false},
       {"name":"Rancid Castle","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal Rancid Castle to give an adjacent Red piece +1 until the end of the turn. Use this ability only once per turn. Reveal the Red piece affected.","colour":"red","side":"evil","expansion":false},
       {"name":"Bone Castle","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal to give an adjacent Skeleton Slashing Action until the end of the turn.","colour":"red","side":"evil","expansion":false},
       {"name":"Bremmuk","power":"10","race":"mold","abilities":"<i>Death Curse</i>: When this Death Curse ends, take any number of destroyed Mold pieces (with a total base strength value not exceeding 8) and place them on any empty forest spaces. (These Mold pieces have been brought back to life.)","colour":"purple","side":"evil","expansion":false},
       {"name":"Queen Kiova","power":"10","race":"insectoid","abilities":"<i>Action</i>: Reveal Queen Kiova to place up to 3 Insectoid pieces you control onto any empty spaces adjacent to Queen Kiova. Reveal all Insectoid pieces placed.","colour":"purple","side":"evil","expansion":false},
-      {"name":"Gangis Wind","power":"9","race":"mold","abilities":"<i>Action</i>: Reveal Gangis Wind (while on a Town space) to move it to any empty Town space.","colour":"purple","side":"evil","expansion":false},
+      {"name":"Gangis Wind","power":"9","race":"mold","abilities":"<i>Action</i>: Reveal Gangis Wind (while on a town space) to move it to any empty town space.","colour":"purple","side":"evil","expansion":false},
       {"name":"Frinhorn","power":"9","race":"dragon","abilities":"<i>Innate</i>: +1 on plains spaces.<br><i>Action</i>: Flying","colour":"purple","side":"evil","expansion":false},
       {"name":"Mrmrm","power":"8","race":"insectoid","abilities":"<i>Innate</i>: +1 against pieces with Flying.","colour":"purple","side":"evil","expansion":false},
       {"name":"Oeroed","power":"8","race":"mold","abilities":"<i>Death Curse</i>: When this Death Curse ends, take any number of destroyed Mold pieces (with a total base strength value not exceeding 6) and place them on any empty forest spaces. (These Mold pieces have been brought back to life.)","colour":"purple","side":"evil","expansion":false},
@@ -240,7 +240,7 @@ var legendsconstructor=function(){
       {"name":"Parasitix","power":"4","race":"worm","abilities":"<i>Action</i>: Reveal and destroy Parasitix to force an opponent to choose any piece under his/her control. You gain control of that piece.","colour":"purple","side":"evil","expansion":false},
       {"name":"Kzz't","power":"3","race":"insectoid","abilities":"<i>Innate</i>: +3 against pieces with Flying Action.<br><i>Action</i>: Flying","colour":"purple","side":"evil","expansion":false},
       {"name":"Slime of Bremmuk","power":"3","race":"mold","abilities":"<i>Innate</i>: +2 on forest spaces.<br><i>Action</i>: Charging","colour":"purple","side":"evil","expansion":false},
-      {"name":"Silwom the Confusing","power":"3","race":"mutant","abilities":"<i>Innate</i>: After Silwon the Confusing successfully attacks, you gain control of any one opponent's piece adjacent to Silwon. (Your choice.)","colour":"purple","side":"evil","expansion":false},
+      {"name":"Silwon the Confusing","power":"3","race":"mutant","abilities":"<i>Innate</i>: After Silwon the Confusing successfully attacks, you gain control of any one opponent's piece adjacent to Silwon. (Your choice.)","colour":"purple","side":"evil","expansion":false},
       {"name":"Nazint","power":"2","race":"insectoid","abilities":"<i>Ability</i>: Reveal and destroy Nazint to give an adjacent Purple piece +1 until the end of the turn. Reveal the Purple piece affected.","colour":"purple","side":"evil","expansion":false},
       {"name":"Foulis","power":"2","race":"mold","abilities":"<i>Innate</i>: +2 on forest spaces.<br><i>Innate</i>: Dispel Magic","colour":"purple","side":"evil","expansion":false},
       {"name":"Nosimaj","power":"2","race":"mutant","abilities":"<i>Death Curse</i>: All non-stationary pieces gain Flying Action.","colour":"purple","side":"evil","expansion":false},
@@ -259,7 +259,7 @@ var legendsconstructor=function(){
       {"name":"Noslrac","power":"10","race":"mutant","abilities":"<i>Ability</i>: Reveal Noslrac and an adjacent Mutant to give that Mutant +2 until the end of the turn. Use this ability only once per turn.<br><i>Death Curse</i>: When this Death Curse ends, chosen opponent destroys 5 pieces under his control simultaneously. Then choose and destroy 3 pieces under your control simultaneously.","colour":"purple","side":"evil","expansion":false},
       null,
       null,
-      {"name":"Galrien","power":"10","race":"angel","abilities":"<i>Action</i>: Flying<br><i>Death Curse</i>: When this Death Curse ends, Place any blue destroyed piece with a base strength of 9 or lower on an empty town space.","colour":"blue","side":"good","expansion":true},
+      {"name":"Galrien","power":"10","race":"angel","abilities":"<i>Action</i>: Flying<br><i>Death Curse</i>: When this Death Curse ends, place any blue destroyed piece with a base strength of 9 or lower on an empty town space.","colour":"blue","side":"good","expansion":true},
       {"name":"Minchu","power":"9","race":"dragon","abilities":"<i>Innate</i>: +1 on forest spaces.<br><i>Action</i>: Reveal Minchu to regain control of a piece adjacent to Minchu. The adjacent piece must be a beige army piece that an opponent has previously taken control of.<br><i>Action</i>: Reveal Minchu (while on a town space) to move him to any empty town space.","colour":"blue","side":"good","expansion":true},
       {"name":"Zanofor Bowdode","power":"8","race":"wizard","abilities":"<i>Innate</i>: Conversion. When constructing your army, you may build your army with Zanofor and 5 pieces with a base power of 7 instead of 3 pieces with a base power of 8 and 3 pieces with a base power of 7.<br><i>Innate</i>: +1 on town spaces.","colour":"blue","side":"good","expansion":true},
       {"name":"Adellin","power":"7","race":"angel","abilities":"<i>Innate</i>: Dispel Magic<br><i>Innate</i>: +1 on forest spaces.<br><i>Action</i>: Quickness","colour":"blue","side":"good","expansion":true},
@@ -282,7 +282,7 @@ var legendsconstructor=function(){
       {"name":"Oplit","power":"2","race":"worm","abilities":"<i>Innate</i>: Dispel Magic<br><i>Innate</i>: +9 against pieces with Berserk.<br><i>Action</i>: Charging","colour":"purple","side":"evil","expansion":true},
       {"name":"Vulad","power":"1","race":"worm","abilities":"<i>Innate</i>: If Vulad attacks or is atacked by a base strength 10 piece, the base strength 10 piece is destroyed.<br><i>Death Curse</i>: All Worms pieces get +1.","colour":"purple","side":"evil","expansion":true},
       {"name":"Wonder Egg","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannot Attack<br><i>Action</i>: Evolution. Reveal and destroy Wonder Egg while on a plains space to place any one of your destroyed pieces with a base power of 2 on the space that Wonder Egg occupied.<br><i>Magic</i>: If Wonder Egg is attacked, destroy Wonder Egg and its attacker.","colour":"purple","side":"evil","expansion":true},
-      {"name":"Plattenuis","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal Plattenuis(while on a plains space) to move a piece under your control adjcent to Plattenuis to any empty plains space.","colour":"purple","side":"evil","expansion":true}
+      {"name":"Plattenuis","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal Plattenuis (while on a plains space) to move a piece under your control adjcent to Plattenuis to any empty plains space.","colour":"purple","side":"evil","expansion":true}
     ],
 
     "powers":["10","9","8","7","6","5","4","3","2","1","*","C"],
@@ -824,7 +824,7 @@ var legendsconstructor=function(){
       "join":{
         "gameslist":[],
         "joingame":function(gameid,authentication,revealedarmynumber,boardrotations){
-          legends.games.div.empty().html("Joining game...");
+          legends.games.div.empty().html("<p>Joining game...</p>");
           legends.games.status="joining";
           if(boardrotations=="default"){
             legends.gamedata.boardrotations=revealedarmynumber%2==0?2:0;
@@ -925,7 +925,7 @@ var legendsconstructor=function(){
             return;
           }
           legends.setboard();
-          legends.games.div.empty().html("Creating game...");
+          legends.games.div.empty().html("<p>Creating game...</p>");
           legends.socket.emit("creategame",{"board":legends.board,"armies":legends.armies,"gamename":legends.gamedata.gamename});
         }
       }
@@ -1159,18 +1159,26 @@ var legendsconstructor=function(){
       });
 
       legends.socket.on("errormessage",function(message){
-        legends.handleerror(message);
+        alert("Error: "+message+".");
+        window.location.reload(false);
       });
 
       legends.socket.on("disconnect",function(message){
-        legends.handleerror("lost connection to server");
+        if(legends.games.div){
+          legends.games.div.empty();
+        }
+        if(legends.board.div){
+          legends.board.div.empty();
+        }
+        if(legends.armies.div){
+          legends.armies.div.empty();
+        }
+        legends.alttext.hide();
+        legends.div.append($("<div></div>").append($("<p>Lost connection to server.</p>"),$("<p></p>").append($("<button>Refresh page</button>").click(function(){
+          window.location.reload(false);
+        }))));
       });
 
-    },
-
-    "handleerror":function(message){
-      alert("Error: "+message+".");
-      window.location.reload(false);
     },
 
     "designarmy":{
@@ -1372,7 +1380,7 @@ var legendsconstructor=function(){
             return function(event){
               for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
                 if(legends.games.create.players[armynumber].sidedropdown.val()==side){
-                  if(confirm("This will overwrite the army code for "+legends.games.create.players[armynumber].playernameinput.val()+". Are you sure you would like to continue?")){
+                  if(confirm("This will overwrite the army code for "+legends.games.create.players[armynumber].playernameinput.val()+". Are you sure you want to continue?")){
                     legends.games.create.players[armynumber].codeinput.val(legends.designarmy[side].armycodetextarea.val());
                   }
                   armynumber=legends.games.create.players.length;

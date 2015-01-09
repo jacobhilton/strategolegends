@@ -173,5 +173,7 @@ io.on("connection",function(socket){
       socket.emit("errormessage","game no longer exists");
     }
   });
-  socket.on("disconnect",function(){});
+  socket.on("disconnect",function(){
+    savegames();
+  });
 });
