@@ -939,7 +939,7 @@ var legendsconstructor=function(){
       legends.div=$("<div></div>").appendTo($(document.body));
       legends.alttext.init();
       legends.dragging.init();
-      legends.socket=io(legends.server.socket);
+      legends.socket=io(legends.server.socket,{"reconnection":false});
 
       legends.socket.on("gameslist",function(gameslist){
         var boardrotationdropdownhtml="<select><option value=\"default\">default</option><option value=\"2\">north</option><option value=\"3\">east</option><option value=\"0\">south</option><option value=\"1\">west</option></select>";
