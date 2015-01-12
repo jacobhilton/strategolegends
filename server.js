@@ -71,7 +71,7 @@ var savegames=function(){
   pg.connect(databaseurl,function(err,client,done){
     var data=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-      if(games[gamenumber]){
+      if(games[gamenumber]&&games[gamenumber].gamedata){
         data[gamenumber]={"armies":games[gamenumber].armies,"board":games[gamenumber].board,"gamedata":games[gamenumber].gamedata};
       }
       else{
@@ -88,14 +88,14 @@ var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-      if(games[gamenumber]){returnvalue.push(JSON.stringify(games[gamenumber]));
-        /*returnvalue.push({
+      if(games[gamenumber]&&games[gamenumber].gamedata){
+        returnvalue.push({
           "gameid":games[gamenumber].gamedata.gameid,
           "gamename":games[gamenumber].gamedata.gamename,
           "haspassword":games[gamenumber].gamedata.password!="",
           "authentication":games[gamenumber].gamedata.authentication,
           "players":games[gamenumber].gamedata.players
-        });*/
+        });
       }
       else{
         returnvalue.push(false);
@@ -153,7 +153,7 @@ io.on("connection",function(socket){
       games[data.gameid]=false;
       var nogamesleft=true;
       for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-        if(games[gamenumber]){
+        if(games[gamenumber]&&games[gamenumber].gamedata){
           nogamesleft=false;
         }
       }
