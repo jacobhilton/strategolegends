@@ -1,2 +1,2 @@
-# Ignore saved games file.
+node_modules
 public/games.json

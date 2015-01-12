@@ -10,7 +10,7 @@ var legendsconstructor=function(){
       "waitforreply":true,
       "ping":function(){
         var image=new Image();
-        img.src=imagedirectory+"empty.gif?timestamp="+(new Date()).getTime();
+        image.src=legends.server.imagedirectory+"empty.gif?timestamp="+(new Date()).getTime();
       }
     },
 
