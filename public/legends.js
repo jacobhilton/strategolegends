@@ -880,8 +880,8 @@ var legendsconstructor=function(){
     },
 
     "games":{
-      "askforpassword":function(haspassword){
-        return haspassword?prompt("Please enter password:",""):"";
+      "askforpassword":function(gamenumber){
+        return legends.games.join.gameslist[gamenumber].haspassword?prompt("Please enter the password for "+legends.games.join.gameslist[gamenumber].gamename+":",""):"";
       },
       "join":{
         "gameslist":[],
@@ -1080,14 +1080,14 @@ var legendsconstructor=function(){
                 if(armynumber==legends.games.join.gameslist[gamenumber].players.length){
                   legends.games.join.gameslist[gamenumber].observerbutton=$("<button>Join as an observer</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
                     return function(event){
-                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,-1,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(legends.games.join.gameslist[gamenumber].haspassword));
+                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,-1,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(gamenumber));
                     };
                   })(gamenumber,gameid));
                 }
                 else{
                   legends.games.join.gameslist[gamenumber].players[armynumber].button=$("<button></button>").text("Join as "+legends.games.join.gameslist[gamenumber].players[armynumber].playername+" ("+legends.games.join.gameslist[gamenumber].players[armynumber].side+")").appendTo(legends.games.join.p).click((function(gamenumber,gameid,armynumber){
                     return function(event){
-                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,armynumber,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(legends.games.join.gameslist[gamenumber].haspassword));
+                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,armynumber,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(gamenumber));
                     };
                   })(gamenumber,gameid,armynumber));
                 }
@@ -1099,7 +1099,7 @@ var legendsconstructor=function(){
               legends.games.join.gameslist[gamenumber].deletebutton=$("<button>Delete game</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
                 return function(){
                   if(confirm("Are you sure you want to delete this game?")){
-                    legends.socket.emit("deletegame",{"gameid":gameid,"authentication":legends.games.join.gameslist[gamenumber].authentication,"password":legends.games.askforpassword(legends.games.join.gameslist[gamenumber].haspassword)});
+                    legends.socket.emit("deletegame",{"gameid":gameid,"authentication":legends.games.join.gameslist[gamenumber].authentication,"password":legends.games.askforpassword(gamenumber)});
                   }
                 };
               })(gamenumber,gameid));
