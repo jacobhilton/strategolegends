@@ -1432,7 +1432,7 @@ var legendsconstructor=function(){
                   "height":legends.styles.pieceheight+"px",
                   "border-width":legends.styles.bordersize+"px",
                   "border-style":"outset",
-                  "border-color":(legends.armies[armynumber].side=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour),
+                  "border-color":(side=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour),
                   "vertical-align":"middle",
                   "cursor":"pointer"
                 }).click((function(side,power,pieceid){
