@@ -83,13 +83,19 @@ var savegames=function(){
     });
   });
 };
-setInterval(savegames,1200000);
+setInterval(savegames,600000);
 var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
       if(games[gamenumber]){
-        returnvalue.push(games[gamenumber].gamedata);
+        returnvalue.push({
+          "gameid":games[gamenumber].gamedata.gameid,
+          "gamename":games[gamenumber].gamedata.gamename,
+          "haspassword":games[gamenumber].gamedata.password!="",
+          "authentication":games[gamenumber].gamedata.authentication,
+          "players":games[gamenumber].gamedata.players
+        });
       }
       else{
         returnvalue.push(false);
@@ -97,6 +103,21 @@ var emitgameslist=function(socket){
     }
     return returnvalue;
   })());
+};
+var gameactionvalidate=function(socket,data){
+  if(data&&data.gameid>-1&&games[data.gameid]&&data.authentication==games[data.gameid].gamedata.authentication){
+    if(games[data.gameid].gamedata.password==""||data.password==games[data.gameid].gamedata.password){
+      return true;
+    }
+    else{
+      socket.emit("errormessage","incorrect password");
+      return false;
+    }
+  }
+  else{
+    socket.emit("errormessage","game no longer exists");
+    return false;
+  }
 };
 io.on("connection",function(socket){
   emitgameslist(socket);
@@ -111,6 +132,7 @@ io.on("connection",function(socket){
       games[gameid].gamedata={
         "gameid":gameid,
         "gamename":data.gamename,
+        "password":data.password,
         "authentication":Math.random().toString().substr(2),
         "players":[]
       };
@@ -127,7 +149,7 @@ io.on("connection",function(socket){
     }
   });
   socket.on("deletegame",function(data){
-    if(data&&data.gameid>-1&&games[data.gameid]&&data.authentication==games[data.gameid].gamedata.authentication){
+    if(gameactionvalidate(socket,data)){
       games[data.gameid]=false;
       var nogamesleft=true;
       for(var gamenumber=0;gamenumber<games.length;gamenumber++){
@@ -141,36 +163,27 @@ io.on("connection",function(socket){
       emitgameslist(io);
       savegames();
     }
-    else{
-      socket.emit("errormessage","game no longer exists");
-    }
   });
   socket.on("joingame",function(data){
-    if(data&&data.gameid>-1&&games[data.gameid]&&data.authentication==games[data.gameid].gamedata.authentication){
+    if(gameactionvalidate(socket,data)){
       socket.emit("init",{
         "board":games[data.gameid].board,
         "armies":games[data.gameid].armies,
         "gamename":games[data.gameid].gamedata.gamename
       });
     }
-    else{
-      socket.emit("errormessage","game no longer exists");
-    }
   });
   socket.on("pieceaction",function(data){
-    if(data&&data.gameid>-1&&games[data.gameid]&&data.authentication==games[data.gameid].gamedata.authentication){
+    if(gameactionvalidate(socket,data)){
       try{
         games[data.gameid][data.action](data.armynumber,data.power,data.number,games[data.gameid].server.waitforreply,data.x,data.y);
         if(!games[data.gameid].server.waitforreply){
-          socket.broadcast.emit("pieceaction",data);
+            socket.broadcast.emit("pieceaction",data);
         }
       }
       catch(error){
         socket.emit("errormessage","invalid action");
       }
-    }
-    else{
-      socket.emit("errormessage","game no longer exists");
     }
   });
   socket.on("disconnect",function(){
