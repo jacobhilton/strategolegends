@@ -22,6 +22,9 @@ fs.readFile(savefile,function(error,data){
         games[gamenumber].socket=io;
         games[gamenumber].gamedata=data[gamenumber].gamedata;
       }
+      else{
+        games[gamenumber]=false;
+      }
     }
   }
   http.listen(process.env.PORT||5000);
@@ -61,6 +64,9 @@ pg.connect(databaseurl,function(err,client,done){
             games[gamenumber].games.status="server";
             games[gamenumber].socket=io;
             games[gamenumber].gamedata=data[gamenumber].gamedata;
+          }
+          else{
+            games[gamenumber]=false;
           }
         }
       }
