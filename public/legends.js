@@ -1034,7 +1034,7 @@ var legendsconstructor=function(){
           legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.playerspan=$("<span></span>").appendTo(legends.games.create.playerp);
           legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">");
-          legends.games.create.passwordinput=$("<input type=\"password\" size=\"20\">");
+          legends.games.create.passwordinput=$("<input type=\"text\" size=\"20\">");
           legends.games.create.playerspan.append(document.createTextNode("Game name: "),legends.games.create.gamenameinput,$("<br>"),document.createTextNode("Password (optional): "),legends.games.create.passwordinput,$("<br>"));
           legends.games.create.playerp.append($("<button>Add a player</button>").click(legends.games.create.addplayer),document.createTextNode(" "),$("<button>Shuffle player names</button>").click(legends.games.create.shuffleplayernames));
           legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append(document.createTextNode(" "),$("<button>Edit army coordinates</button>").click(function(event){
