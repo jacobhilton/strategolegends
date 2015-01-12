@@ -88,14 +88,14 @@ var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-      if(games[gamenumber]){
-        returnvalue.push({
+      if(games[gamenumber]){returnvalue.push(JSON.stringify(games[gamenumber]));
+        /*returnvalue.push({
           "gameid":games[gamenumber].gamedata.gameid,
           "gamename":games[gamenumber].gamedata.gamename,
           "haspassword":games[gamenumber].gamedata.password!="",
           "authentication":games[gamenumber].gamedata.authentication,
           "players":games[gamenumber].gamedata.players
-        });
+        });*/
       }
       else{
         returnvalue.push(false);
