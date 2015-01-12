@@ -1016,7 +1016,7 @@ var legendsconstructor=function(){
       $(window).focus(function(){
         legends.games.windowfocused=true;
       });
-      window.setTimeout(legends.server.ping,600000);
+      window.setInterval(legends.server.ping,600000);
       legends.games.status="init";
       $(document.body).css({
         "font-family":"sans-serif"
