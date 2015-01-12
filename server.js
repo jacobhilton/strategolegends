@@ -54,7 +54,7 @@ pg.connect(databaseurl,function(err,client,done){
       try{
         var data=JSON.parse(result.rows[0].value);
         for(var gamenumber=0;gamenumber<data.length;gamenumber++){
-          if(games[gamenumber]){
+          if(data[gamenumber]){
             games[gamenumber]=new legendsconstructor();
             games[gamenumber].armies=data[gamenumber].armies;
             games[gamenumber].board=data[gamenumber].board;
