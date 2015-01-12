@@ -1,0 +1,1 @@
+strategolegends is an implementation of the board game Stratego Legends.

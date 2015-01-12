@@ -2,11 +2,15 @@
   "name": "strategolegends",
   "description": "Stratego Legends",
   "version": "0.0.1",
-  "engines": {
-    "node": "0.10.x"
-  },
   "scripts": {
     "start": "node server.js"
+  },
+  "repository": {
+    "type": "svn",
+    "url": ""
+  },
+  "engines": {
+    "node": "0.10.x"
   },
   "dependencies": {
     "express": "^4.10.7",
