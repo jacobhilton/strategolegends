@@ -14,12 +14,14 @@ fs.readFile(savefile,function(error,data){
   else{
     data=JSON.parse(data);
     for(var gamenumber=0;gamenumber<data.length;gamenumber++){
-      games[gamenumber]=new legendsconstructor();
-      games[gamenumber].armies=data[gamenumber].armies;
-      games[gamenumber].board=data[gamenumber].board;
-      games[gamenumber].games.status="server";
-      games[gamenumber].socket=io;
-      games[gamenumber].gamedata=data[gamenumber].gamedata;
+      if(games[gamenumber]){
+        games[gamenumber]=new legendsconstructor();
+        games[gamenumber].armies=data[gamenumber].armies;
+        games[gamenumber].board=data[gamenumber].board;
+        games[gamenumber].games.status="server";
+        games[gamenumber].socket=io;
+        games[gamenumber].gamedata=data[gamenumber].gamedata;
+      }
     }
   }
   http.listen(process.env.PORT||5000);
@@ -52,12 +54,14 @@ pg.connect(databaseurl,function(err,client,done){
       try{
         var data=JSON.parse(result.rows[0].value);
         for(var gamenumber=0;gamenumber<data.length;gamenumber++){
-          games[gamenumber]=new legendsconstructor();
-          games[gamenumber].armies=data[gamenumber].armies;
-          games[gamenumber].board=data[gamenumber].board;
-          games[gamenumber].games.status="server";
-          games[gamenumber].socket=io;
-          games[gamenumber].gamedata=data[gamenumber].gamedata;
+          if(games[gamenumber]){
+            games[gamenumber]=new legendsconstructor();
+            games[gamenumber].armies=data[gamenumber].armies;
+            games[gamenumber].board=data[gamenumber].board;
+            games[gamenumber].games.status="server";
+            games[gamenumber].socket=io;
+            games[gamenumber].gamedata=data[gamenumber].gamedata;
+          }
         }
       }
       catch(error){
@@ -71,7 +75,7 @@ var savegames=function(){
   pg.connect(databaseurl,function(err,client,done){
     var data=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-      if(games[gamenumber]&&games[gamenumber].gamedata){
+      if(games[gamenumber]){
         data[gamenumber]={"armies":games[gamenumber].armies,"board":games[gamenumber].board,"gamedata":games[gamenumber].gamedata};
       }
       else{
@@ -88,7 +92,7 @@ var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];
     for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-      if(games[gamenumber]&&games[gamenumber].gamedata){
+      if(games[gamenumber]){
         returnvalue.push({
           "gameid":games[gamenumber].gamedata.gameid,
           "gamename":games[gamenumber].gamedata.gamename,
@@ -153,7 +157,7 @@ io.on("connection",function(socket){
       games[data.gameid]=false;
       var nogamesleft=true;
       for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-        if(games[gamenumber]&&games[gamenumber].gamedata){
+        if(games[gamenumber]){
           nogamesleft=false;
         }
       }
