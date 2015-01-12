@@ -1,4 +1,4 @@
- var legendsconstructor=function(){
+var legendsconstructor=function(){
 
   var legends=this;
 
