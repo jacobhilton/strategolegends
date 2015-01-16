@@ -1307,6 +1307,7 @@ var legendsconstructor=function(){
                     for(var armynumber=0;armynumber<legends.games.join.gameslist[gamenumber].players.length;armynumber++){
                       legends.games.create.addplayer();
                       legends.games.create.players[armynumber].playernameinput.val(legends.games.join.gameslist[gamenumber].players[armynumber].playername);
+                      legends.games.create.players[armynumber].button.text("Create and join as "+legends.games.join.gameslist[gamenumber].players[armynumber].playername);
                       legends.games.create.players[armynumber].sidedropdown.val(legends.games.join.gameslist[gamenumber].players[armynumber].side);
                       legends.games.create.players[armynumber].codeinput.val(legends.games.join.gameslist[gamenumber].players[armynumber].code);
                       legends.games.create.players[armynumber].x1input.val(legends.games.join.gameslist[gamenumber].players[armynumber].coordinates[0].x);
