@@ -1394,6 +1394,7 @@ var legendsconstructor=function(){
               "position":"relative",
               "width":(legends.styles.armypiecewidth*6)+"px",
               "height":(legends.styles.armypieceheight*5)+"px",
+              "margin":"auto",
               "background-image":"url('"+legends.server.imagedirectory+"box.png')",
               "background-size":"100% 100%"
             });
