@@ -525,7 +525,20 @@ var legendsconstructor=function(){
         "7C":[["plains","desert","mountain","water"],["plains","plains","marsh","plains"],["plains","forest","plains","plains"],["plains","plains","town","plains"]],
         "7D":[["plains","desert","plains","plains"],["plains","marsh","mountain","plains"],["plains","town","plains","forest"],["water","plains","plains","plains"]]
       },
+      "presetboardids":[],
       "randomboardid":function(){
+        if(legends.terrain.presetboardids.length==0){
+          var boardids=[];
+          for(var i=0;i<7;i++){
+            for(var j=0;j<4;j++){
+              boardids.push((i+1)+["A","B","C","D"][j]);
+            }
+          }
+          while(boardids.length>0){
+            legends.terrain.presetboardids=legends.terrain.presetboardids.concat(boardids.splice(Math.floor(Math.random()*boardids.length),1));
+          }
+        }
+        return legends.terrain.presetboardids.splice(0,1)[0];
         return (Math.floor(Math.random()*7)+1)+["A","B","C","D"][Math.floor(Math.random()*4)];
       },
       "randomboard":function(){
@@ -593,13 +606,24 @@ var legendsconstructor=function(){
           "piecekeys":[]
         }
       };
+      var boardids=[];
+      for(var armynumber=0;armynumber<legends.armies.length;armynumber++){
+        for(var square=0;square<2;square++){
+          if(legends.armies[armynumber].boardids[square]=="official"){
+            boardids.push(legends.terrain.randomboardid());
+          }
+          else{
+            boardids.push(legends.armies[armynumber].boardids[square]);
+          }
+        }
+      }
       for(var armynumber=0;armynumber<legends.armies.length;armynumber++){
         var piecesetup=legends.randompiecesetup();
         var waterspacessofar=0;
         for(var square=0;square<2;square++){
           var x=legends.armies[armynumber].coordinates[square].x;
           var y=legends.armies[armynumber].coordinates[square].y;
-          var boardid=legends.armies[armynumber].shuffledboardids[square];
+          var boardid=boardids.splice(Math.floor(Math.random()*boardids.length),1)[0];
           if(boardid=="random"){
             var terrainsetup=legends.terrain.randomboard();
           }
@@ -1072,7 +1096,7 @@ var legendsconstructor=function(){
             playernames.push(legends.games.create.players[armynumber].playernameinput.val());
           }
           for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
-            var playername=playernames.splice(Math.floor(Math.random()*playernames.length),1);
+            var playername=playernames.splice(Math.floor(Math.random()*playernames.length),1)[0];
             legends.games.create.players[armynumber].playernameinput.val(playername);
             legends.games.create.players[armynumber].button.text("Create and join as "+playername);
           }
@@ -1170,23 +1194,6 @@ var legendsconstructor=function(){
             alert("Error: "+coordinatevalidationerror+".");
             return;
           }
-          var boardids=[];
-          for(var armynumber=0;armynumber<armycodes.length;armynumber++){
-            for(var square=0;square<2;square++){
-              if(legends.armies[armynumber].boardids[square]=="official"){
-                boardids.push(legends.terrain.randomboardid());
-              }
-              else{
-                boardids.push(legends.armies[armynumber].boardids[square]);
-              }
-            }
-          }
-          for(var armynumber=0;armynumber<armycodes.length;armynumber++){
-            legends.armies[armynumber].shuffledboardids=[];
-            for(var square=0;square<2;square++){
-              legends.armies[armynumber].shuffledboardids=legends.armies[armynumber].shuffledboardids.concat(boardids.splice(Math.floor(Math.random()*boardids.length),1));
-            }
-          }
           legends.setboard();
           legends.games.div.empty().html("<p>Creating game...</p>");
           legends.socket.emit("creategame",{"board":legends.board,"armies":legends.armies,"gamename":legends.gamedata.gamename,"password":legends.gamedata.password});
@@ -1217,11 +1224,12 @@ var legendsconstructor=function(){
         if(legends.games.status=="init"){
           legends.games.status="lobby";
           legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"562px","margin-left":legends.styles.marginsize+"px","margin-bottom":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<ul><li>Left-click on pieces to move them.</li><li>Right-click on pieces to reveal them to your opponents.</li><li>Ctrl+click on pieces to change their allegiance.</li><li>Either drop pieces off the board or middle-click on them to move them to the box.</li></ul><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>"));
-          legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div);
+          legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div).append(document.createTextNode("Game name: "));
+          legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">").appendTo(legends.games.create.playerp);
+          legends.games.create.playerp.append($("<br>"),document.createTextNode("Password (optional): "));
+          legends.games.create.passwordinput=$("<input type=\"text\" size=\"20\">").appendTo(legends.games.create.playerp);
+          legends.games.create.playerp.append($("<br>"));
           legends.games.create.playerspan=$("<span></span>").appendTo(legends.games.create.playerp);
-          legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">");
-          legends.games.create.passwordinput=$("<input type=\"text\" size=\"20\">");
-          legends.games.create.playerspan.append(document.createTextNode("Game name: "),legends.games.create.gamenameinput,$("<br>"),document.createTextNode("Password (optional): "),legends.games.create.passwordinput,$("<br>"));
           legends.games.create.playerp.append($("<button>Add a player</button>").click(legends.games.create.addplayer),document.createTextNode(" "),$("<button>Shuffle player names</button>").click(legends.games.create.shuffleplayernames));
           legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append(document.createTextNode(" "),$("<button>Edit layout and terrain</button>").click(function(event){
             legends.games.create.showingcoordinates=true;
@@ -1283,12 +1291,34 @@ var legendsconstructor=function(){
               legends.games.join.gameslist[gamenumber].boardrotationdropdown=$(boardrotationdropdownhtml).appendTo(legends.games.join.p);
               legends.games.join.p.append(document.createTextNode(" / "));
               legends.games.join.gameslist[gamenumber].deletebutton=$("<button>Delete game</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
-                return function(){
+                return function(event){
                   if(confirm("Are you sure you want to delete this game?")){
                     legends.socket.emit("deletegame",{"gameid":gameid,"authentication":legends.games.join.gameslist[gamenumber].authentication,"password":legends.games.askforpassword(gamenumber)});
                   }
                 };
               })(gamenumber,gameid));
+              legends.games.join.p.append(document.createTextNode(" / "));
+              legends.games.join.gameslist[gamenumber].reusebutton=$("<button>Reuse setup</button>").appendTo(legends.games.join.p).click((function(gamenumber){
+                return function(event){
+                  if(confirm("This will overwrite all the current settings. Are you sure you want to continue?")){
+                    legends.games.create.players.splice(0,legends.games.create.players.length);
+                    legends.games.create.joinspan.empty();
+                    legends.games.create.playerspan.empty();
+                    for(var armynumber=0;armynumber<legends.games.join.gameslist[gamenumber].players.length;armynumber++){
+                      legends.games.create.addplayer();
+                      legends.games.create.players[armynumber].playernameinput.val(legends.games.join.gameslist[gamenumber].players[armynumber].playername);
+                      legends.games.create.players[armynumber].sidedropdown.val(legends.games.join.gameslist[gamenumber].players[armynumber].side);
+                      legends.games.create.players[armynumber].codeinput.val(legends.games.join.gameslist[gamenumber].players[armynumber].code);
+                      legends.games.create.players[armynumber].x1input.val(legends.games.join.gameslist[gamenumber].players[armynumber].coordinates[0].x);
+                      legends.games.create.players[armynumber].y1input.val(legends.games.join.gameslist[gamenumber].players[armynumber].coordinates[0].y);
+                      legends.games.create.players[armynumber].x2input.val(legends.games.join.gameslist[gamenumber].players[armynumber].coordinates[1].x);
+                      legends.games.create.players[armynumber].y2input.val(legends.games.join.gameslist[gamenumber].players[armynumber].coordinates[1].y);
+                      legends.games.create.players[armynumber].boardid1dropdown.val(legends.games.join.gameslist[gamenumber].players[armynumber].boardids[0]);
+                      legends.games.create.players[armynumber].boardid2dropdown.val(legends.games.join.gameslist[gamenumber].players[armynumber].boardids[1]);
+                    }
+                  }
+                };
+              })(gamenumber));
             }
           }
           if(nogamesavailable){

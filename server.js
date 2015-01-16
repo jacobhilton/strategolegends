@@ -147,7 +147,13 @@ io.on("connection",function(socket){
         "players":[]
       };
       for(var armynumber=0;armynumber<games[gameid].armies.length;armynumber++){
-        games[gameid].gamedata.players.push({"side":games[gameid].armies[armynumber].side,"playername":games[gameid].armies[armynumber].playername});
+        games[gameid].gamedata.players.push({
+          "side":games[gameid].armies[armynumber].side,
+          "playername":games[gameid].armies[armynumber].playername,
+          "code":games[gameid].armies[armynumber].code,
+          "coordinates":games[gameid].armies[armynumber].coordinates,
+          "boardids":games[gameid].armies[armynumber].boardids
+        });
       }
       socket.emit("gamecreated",{"gameid":gameid,"authentication":games[gameid].gamedata.authentication});
       emitgameslist(socket.broadcast);
