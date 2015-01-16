@@ -494,6 +494,80 @@ var legendsconstructor=function(){
       return armypieces;
     },
 
+    "terrain":{
+      "presetboards":{
+        "1A":[["desert","mountain","forest","town"],["mountain","mountain","forest","plains"],["mountain","mountain","mountain","marsh"],["town","water","mountain","mountain"]],
+        "1B":[["marsh","forest","desert","forest"],["marsh","forest","water","plains"],["marsh","marsh","marsh","mountain"],["marsh","town","marsh","marsh"]],
+        "1C":[["forest","forest","forest","mountain"],["forest","town","forest","plains"],["forest","forest","forest","desert"],["marsh","marsh","water","marsh"]],
+        "1D":[["plains","plains","forest","mountain"],["plains","plains","mountain","desert"],["plains","plains","plains","desert"],["plains","water","town","marsh"]],
+        "2A":[["desert","desert","desert","forest"],["desert","desert","desert","forest"],["desert","mountain","plains","plains"],["desert","water","marsh","town"]],
+        "2B":[["town","plains","marsh","mountain"],["water","forest","town","mountain"],["town","marsh","forest","marsh"],["desert","marsh","marsh","town"]],
+        "2C":[["mountain","mountain","desert","plains"],["mountain","water","town","marsh"],["mountain","mountain","marsh","marsh"],["mountain","marsh","forest","marsh"]],
+        "2D":[["mountain","desert","plains","town"],["forest","forest","mountain","mountain"],["forest","forest","mountain","marsh"],["forest","forest","mountain","water"]],
+        "3A":[["mountain","forest","town","water"],["plains","plains","marsh","desert"],["plains","plains","plains","plains"],["mountain","mountain","mountain","mountain"]],
+        "3B":[["forest","forest","mountain","mountain"],["forest","town","forest","mountain"],["plains","forest","forest","mountain"],["desert","marsh","water","mountain"]],
+        "3C":[["marsh","mountain","marsh","plains"],["forest","forest","marsh","desert"],["forest","forest","marsh","town"],["forest","water","forest","marsh"]],
+        "3D":[["water","mountain","desert","desert"],["mountain","town","desert","desert"],["mountain","mountain","mountain","desert"],["plains","forest","mountain","marsh"]],
+        "4A":[["plains","forest","town","water"],["forest","plains","forest","mountain"],["forest","forest","plains","plains"],["marsh","forest","plains","desert"]],
+        "4B":[["plains","forest","town","desert"],["forest","forest","desert","desert"],["forest","forest","marsh","water"],["mountain","forest","desert","desert"]],
+        "4C":[["plains","plains","desert","desert"],["forest","mountain","plains","desert"],["plains","town","marsh","desert"],["plains","desert","water","plains"]],
+        "4D":[["marsh","marsh","town","plains"],["water","marsh","marsh","forest"],["marsh","marsh","desert","mountain"],["desert","desert","desert","desert"]],
+        "5A":[["marsh","plains","mountain","desert"],["plains","plains","forest","plains"],["plains","marsh","marsh","marsh"],["marsh","town","marsh","water"]],
+        "5B":[["water","mountain","forest","desert"],["forest","town","forest","plains"],["forest","forest","forest","forest"],["forest","marsh","plains","marsh"]],
+        "5C":[["marsh","plains","marsh","water"],["desert","mountain","forest","marsh"],["desert","town","town","forest"],["forest","town","mountain","desert"]],
+        "5D":[["mountain","town","mountain","plains"],["plains","mountain","forest","mountain"],["mountain","marsh","mountain","marsh"],["water","mountain","desert","mountain"]],
+        "6A":[["forest","desert","forest","marsh"],["plains","forest","town","forest"],["forest","plains","forest","mountain"],["plains","forest","water","forest"]],
+        "6B":[["marsh","town","forest","forest"],["marsh","forest","marsh","desert"],["marsh","marsh","mountain","plains"],["marsh","water","marsh","mountain"]],
+        "6C":[["desert","town","desert","forest"],["mountain","desert","forest","desert"],["desert","water","desert","plains"],["plains","desert","marsh","desert"]],
+        "6D":[["forest","forest","marsh","marsh"],["forest","forest","marsh","marsh"],["water","plains","mountain","mountain"],["desert","town","mountain","mountain"]],
+        "7A":[["forest","forest","forest","mountain"],["forest","marsh","water","forest"],["forest","desert","forest","forest"],["forest","town","forest","plains"]],
+        "7B":[["forest","forest","forest","town"],["forest","forest","plains","marsh"],["forest","desert","mountain","water"],["forest","forest","forest","forest"]],
+        "7C":[["plains","desert","mountain","water"],["plains","plains","marsh","plains"],["plains","forest","plains","plains"],["plains","plains","town","plains"]],
+        "7D":[["plains","desert","plains","plains"],["plains","marsh","mountain","plains"],["plains","town","plains","forest"],["water","plains","plains","plains"]]
+      },
+      "randomboardid":function(){
+        return (Math.floor(Math.random()*7)+1)+["A","B","C","D"][Math.floor(Math.random()*4)];
+      },
+      "randomboard":function(){
+        var watera=Math.floor(Math.random()*4);
+        var waterb=Math.floor(Math.random()*4);
+        var townc=Math.floor(Math.random()*15);
+        var towna=Math.floor(townc/4);
+        var townb=townc%4;
+        if(towna==watera&&townb==waterb){
+          towna=3;
+          townb=3;
+        }
+        var returnvalue=[];
+        for(var a=0;a<4;a++){
+          returnvalue[a]=[];
+          for(var b=0;b<4;b++){
+            if(a==watera&&b==waterb){
+              returnvalue[a][b]="water";
+            }
+            else if(a==towna&&b==townb){
+              returnvalue[a][b]="town";
+            }
+            else{
+              returnvalue[a][b]=["plains","marsh","forest","mountain","desert"][Math.floor(Math.random()*5)];
+            }
+          }
+        }
+        return returnvalue;
+      },
+      "randomrotation":function(board){
+        var rotation=Math.floor(Math.random()*4);
+        var returnvalue=[];
+        for(var a=0;a<4;a++){
+          returnvalue[a]=[];
+          for(var b=0;b<4;b++){
+            returnvalue[a][b]=[board[a][b],board[b][3-a],board[3-a][3-b],board[3-b][a]][rotation];
+          }
+        }
+        return returnvalue;
+      },
+    },
+
     "randompiecesetup":function(){
       var piecekeys=[];
       for(var power in legends.powerquantities){
@@ -507,8 +581,6 @@ var legendsconstructor=function(){
       while(piecekeys.length>0){
         returnvalue=returnvalue.concat(piecekeys.splice(Math.floor(Math.random()*piecekeys.length),1));
       }
-      returnvalue.splice(15+Math.floor(Math.random()*16),0,false);
-      returnvalue.splice(Math.floor(Math.random()*16),0,false);
       return returnvalue;
     },
 
@@ -523,21 +595,36 @@ var legendsconstructor=function(){
       };
       for(var armynumber=0;armynumber<legends.armies.length;armynumber++){
         var piecesetup=legends.randompiecesetup();
+        var waterspacessofar=0;
         for(var square=0;square<2;square++){
           var x=legends.armies[armynumber].coordinates[square].x;
           var y=legends.armies[armynumber].coordinates[square].y;
+          var boardid=legends.armies[armynumber].shuffledboardids[square];
+          if(boardid=="random"){
+            var terrainsetup=legends.terrain.randomboard();
+          }
+          else{
+            var terrainsetup=legends.terrain.randomrotation(legends.terrain.presetboards[boardid]);
+          }
           for(var c=0;c<16;c++){
-            var piecekey=piecesetup[square*16+c];
             var a=Math.floor(c/4);
             var b=c%4;
             if(!legends.board.tiles[x+a]){
               legends.board.tiles[x+a]=[];
             }
-            if(piecekey){
+            if(terrainsetup[a][b]=="water"){
+              legends.board.tiles[x+a][y+b]={
+                "terrain":"water",
+                "piecekeys":[]
+              };
+              waterspacessofar++;
+            }
+            else{
+              var piecekey=piecesetup[square*16+c-waterspacessofar];
               legends.board.width=Math.max(legends.board.width,x+a+1);
               legends.board.height=Math.max(legends.board.height,y+b+1);
               legends.board.tiles[x+a][y+b]={
-                "terrain":["plains","marsh","forest","mountain","desert"][Math.floor(Math.random()*5)],
+                "terrain":terrainsetup[a][b],
                 "piecekeys":[{"armynumber":armynumber,"power":piecekey.power,"number":piecekey.number}]
               };
               legends.armies[armynumber].pieces[piecekey.power][piecekey.number]={
@@ -554,21 +641,7 @@ var legendsconstructor=function(){
                 "allegiance":legends.armies[armynumber].side
               };
             }
-            else{
-              legends.board.tiles[x+a][y+b]={
-                "terrain":"water",
-                "piecekeys":[]
-              };
-            }
           }
-          c=Math.floor(Math.random()*15);
-          a=Math.floor(c/4);
-          b=c%4;
-          if(legends.board.tiles[x+a][y+b].terrain=="water"){
-            a=3;
-            b=3;
-          }
-          legends.board.tiles[x+a][y+b].terrain="town";
         }
       }
     },
@@ -1010,6 +1083,7 @@ var legendsconstructor=function(){
             returnvalue.push({
               "side":legends.games.create.players[armynumber].sidedropdown.val(),
               "coordinates":[{"x":legends.games.create.players[armynumber].x1input.val()*1,"y":legends.games.create.players[armynumber].y1input.val()*1},{"x":legends.games.create.players[armynumber].x2input.val()*1,"y":legends.games.create.players[armynumber].y2input.val()*1}],
+              "boardids":[legends.games.create.players[armynumber].boardid1dropdown.val(),legends.games.create.players[armynumber].boardid2dropdown.val()],
               "code":legends.games.create.players[armynumber].codeinput.val(),
               "playername":legends.games.create.players[armynumber].playernameinput.val(),
               "playernamehighlighted":false
@@ -1019,6 +1093,14 @@ var legendsconstructor=function(){
         },
         "addplayer":function(){
           var armynumber=legends.games.create.players.length;
+          var boardiddropdownhtml="<select><option value=\"official\">random official</option><option value=\"random\">random</option>";
+          for(var i=0;i<7;i++){
+            for(var j=0;j<4;j++){
+              var boardid=(i+1)+["A","B","C","D"][j];
+              boardiddropdownhtml+="<option value=\""+boardid+"\">official "+boardid+"</option>";
+            }
+          }
+          boardiddropdownhtml+="</select>";
           legends.games.create.players[armynumber]={
             "playernameinput":$("<input type=\"text\" size=\"10\" value=\"Player "+(armynumber+1)+"\">").change((function(armynumber){
               return function(event){
@@ -1030,9 +1112,11 @@ var legendsconstructor=function(){
             "x1input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8)+"\">").css({"width":"2.5em"}),
             "y1input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"}),
             "x2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(Math.floor(armynumber/2)*8+4)+"\">").css({"width":"2.5em"}),
-            "y2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"})
+            "y2input":$("<input type=\"number\" size=\"2\" min=\"0\" step=\"1\" value=\""+(armynumber%2==0?0:4)+"\">").css({"width":"2.5em"}),
+            "boardid1dropdown":$(boardiddropdownhtml),
+            "boardid2dropdown":$(boardiddropdownhtml)
           };
-          legends.games.create.players[armynumber].coordinatespan=$("<span></span>").toggle(legends.games.create.showingcoordinates).append(document.createTextNode(" at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(")"));
+          legends.games.create.players[armynumber].coordinatespan=$("<span></span>").css({"font-size":"0.8em"}).toggle(legends.games.create.showingcoordinates).append($("<br>"),document.createTextNode("at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(") contributing "),legends.games.create.players[armynumber].boardid1dropdown,document.createTextNode(" and "),legends.games.create.players[armynumber].boardid2dropdown,document.createTextNode(" terrain"));
           legends.games.create.playerspan.append(document.createTextNode("Player "+(armynumber+1)+": player name "),legends.games.create.players[armynumber].playernameinput,document.createTextNode(" with "),legends.games.create.players[armynumber].sidedropdown,document.createTextNode(" army code "),legends.games.create.players[armynumber].codeinput,legends.games.create.players[armynumber].coordinatespan,$("<br>"));
           legends.games.create.players[armynumber].button=$("<button></button>").text("Create and join as Player "+(armynumber+1)).appendTo(legends.games.create.joinspan).click((function(armynumber){
             return function(event){
@@ -1086,6 +1170,23 @@ var legendsconstructor=function(){
             alert("Error: "+coordinatevalidationerror+".");
             return;
           }
+          var boardids=[];
+          for(var armynumber=0;armynumber<armycodes.length;armynumber++){
+            for(var square=0;square<2;square++){
+              if(legends.armies[armynumber].boardids[square]=="official"){
+                boardids.push(legends.terrain.randomboardid());
+              }
+              else{
+                boardids.push(legends.armies[armynumber].boardids[square]);
+              }
+            }
+          }
+          for(var armynumber=0;armynumber<armycodes.length;armynumber++){
+            legends.armies[armynumber].shuffledboardids=[];
+            for(var square=0;square<2;square++){
+              legends.armies[armynumber].shuffledboardids=legends.armies[armynumber].shuffledboardids.concat(boardids.splice(Math.floor(Math.random()*boardids.length),1));
+            }
+          }
           legends.setboard();
           legends.games.div.empty().html("<p>Creating game...</p>");
           legends.socket.emit("creategame",{"board":legends.board,"armies":legends.armies,"gamename":legends.gamedata.gamename,"password":legends.gamedata.password});
@@ -1122,7 +1223,7 @@ var legendsconstructor=function(){
           legends.games.create.passwordinput=$("<input type=\"text\" size=\"20\">");
           legends.games.create.playerspan.append(document.createTextNode("Game name: "),legends.games.create.gamenameinput,$("<br>"),document.createTextNode("Password (optional): "),legends.games.create.passwordinput,$("<br>"));
           legends.games.create.playerp.append($("<button>Add a player</button>").click(legends.games.create.addplayer),document.createTextNode(" "),$("<button>Shuffle player names</button>").click(legends.games.create.shuffleplayernames));
-          legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append(document.createTextNode(" "),$("<button>Edit army coordinates</button>").click(function(event){
+          legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append(document.createTextNode(" "),$("<button>Edit layout and terrain</button>").click(function(event){
             legends.games.create.showingcoordinates=true;
             for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
               legends.games.create.players[armynumber].coordinatespan.show();
