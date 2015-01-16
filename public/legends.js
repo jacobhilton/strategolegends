@@ -1298,7 +1298,7 @@ var legendsconstructor=function(){
                 };
               })(gamenumber,gameid));
               legends.games.join.p.append(document.createTextNode(" / "));
-              legends.games.join.gameslist[gamenumber].reusebutton=$("<button>Reuse setup</button>").appendTo(legends.games.join.p).click((function(gamenumber){
+              legends.games.join.gameslist[gamenumber].reusebutton=$("<button>Reuse settings</button>").appendTo(legends.games.join.p).click((function(gamenumber){
                 return function(event){
                   if(confirm("This will overwrite all the current settings. Are you sure you want to continue?")){
                     legends.games.create.players.splice(0,legends.games.create.players.length);
