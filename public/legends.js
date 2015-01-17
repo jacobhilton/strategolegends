@@ -16,6 +16,7 @@ var legendsconstructor=function(){
 
     "styles":{
       "headerwidth":600,
+      "smallfontsize":0.8,
       "marginsize":20,
       "tilesize":80,
       "playernamehighlightcolour":"#ffff66",
@@ -80,8 +81,8 @@ var legendsconstructor=function(){
       {"name":"Dwarven Scout","power":"2","race":"dwarf","abilities":"<i>Death Curse</i>: When this Death Curse ends, reveal any 2 of your opponent's pieces.","colour":"green","side":"good","set":"original","image":"24.jpg"},
       {"name":"Flood bringer","power":"2","race":"plantlife","abilities":"<i>Death Curse</i>: When this Death Curse ends, reveal all pieces adjacent to water spaces. Destroy any one non-stationary piece revealed.","colour":"green","side":"good","set":"original","image":"25.jpg"},
       {"name":"Elven Assassin","power":"1","race":"elf","abilities":"<i>Action</i>: Reveal any piece up to 2 spaces away. If that piece has a base strenth of 10, destroy it. If the revealed piece is anything but a base strength 10, destroy Elven Assassin.","colour":"green","side":"good","set":"original","image":"26.jpg"},
-      {"name":"Clevut","power":"1","race":"doppelganger","abilities":"<i>Innate</i>: Cannot attack<br><i>Ability</i>: If Clevut is attacked, destroy hm and take control of the attacking piece. Place the piece on the space that Clevut occupied.","colour":"green","side":"good","set":"original","image":"27.jpg"},
-      {"name":"Quicksand","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Quicksand is attacked, destroy it and its attacker.<br><i>Death Curse</i>: when this Death Curse ends, reveal all pieces on march spaces. Destroy one revealed non-stationary piece.","colour":"green","side":"good","set":"original","image":"28.jpg"},
+      {"name":"Clevut","power":"1","race":"doppelganger","abilities":"<i>Innate</i>: Cannot attack<br><i>Ability</i>: If Clevut is attacked, destroy him and take control of the attacking piece. Place the piece on the space that Clevut occupied.","colour":"green","side":"good","set":"original","image":"27.jpg"},
+      {"name":"Quicksand","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Quicksand is attacked, destroy it and its attacker.<br><i>Death Curse</i>: when this Death Curse ends, reveal all pieces on marsh spaces. Destroy one revealed non-stationary piece.","colour":"green","side":"good","set":"original","image":"28.jpg"},
       {"name":"Earthquake","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Earthquake is attacked, destroy it and its attacker.<br><i>Death Curse</i>: When this Death Curse ends, reveal all pices on plains spaces. Destroy one revealed non-stationary piece.","colour":"green","side":"good","set":"original","image":"29.jpg"},
       {"name":"Eruption","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Eruption is attacked, destroy it and its attacker.<br><i>Death Curse</i>: When this Death Curse ends, reveal all pices on mountain spaces. Destroy one revealed non-stationary piece.","colour":"green","side":"good","set":"original","image":"30.jpg"},
       {"name":"Dwaren Ambush","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannot attack<br><i>Magic</i>: If Dwarven Ambush is attacked, destroy it and its attacker. You may then move and reveal any living Dwarf under your control to the space Dwarven Ambush occupied.","colour":"green","side":"good","set":"original","image":"31.jpg"},
@@ -690,7 +691,7 @@ var legendsconstructor=function(){
           "z-index":(piece.z+1)+""
         });
       }
-      piece.boarddiv.toggle(piece.alive);
+      piece.boarddiv.toggle(piece.alive||(piece==legends.dragging.activepiece));
       piece.boarddiv.css({
         "border-color":(piece.allegiance=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour)
       });
@@ -1069,6 +1070,7 @@ var legendsconstructor=function(){
         "gameslist":[],
         "joingame":function(gameid,authentication,revealedarmynumber,boardrotations,password){
           legends.games.div.empty().html("<p>Joining game...</p>");
+          legends.designarmy.status=false;
           legends.games.status="joining";
           if(boardrotations=="default"){
             legends.gamedata.boardrotations=revealedarmynumber%2==0?2:0;
@@ -1140,7 +1142,7 @@ var legendsconstructor=function(){
             "boardid1dropdown":$(boardiddropdownhtml),
             "boardid2dropdown":$(boardiddropdownhtml)
           };
-          legends.games.create.players[armynumber].coordinatespan=$("<span></span>").css({"font-size":"0.8em"}).toggle(legends.games.create.showingcoordinates).append($("<br>"),document.createTextNode("at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(") contributing "),legends.games.create.players[armynumber].boardid1dropdown,document.createTextNode(" and "),legends.games.create.players[armynumber].boardid2dropdown,document.createTextNode(" terrain"));
+          legends.games.create.players[armynumber].coordinatespan=$("<span></span>").css({"font-size":legends.styles.smallfontsize+"em"}).toggle(legends.games.create.showingcoordinates).append($("<br>"),document.createTextNode("at coordinates ("),legends.games.create.players[armynumber].x1input,document.createTextNode(","),legends.games.create.players[armynumber].y1input,document.createTextNode(") and ("),legends.games.create.players[armynumber].x2input,document.createTextNode(","),legends.games.create.players[armynumber].y2input,document.createTextNode(") contributing "),legends.games.create.players[armynumber].boardid1dropdown,document.createTextNode(" and "),legends.games.create.players[armynumber].boardid2dropdown,document.createTextNode(" terrain"));
           legends.games.create.playerspan.append(document.createTextNode("Player "+(armynumber+1)+": player name "),legends.games.create.players[armynumber].playernameinput,document.createTextNode(" with "),legends.games.create.players[armynumber].sidedropdown,document.createTextNode(" army code "),legends.games.create.players[armynumber].codeinput,legends.games.create.players[armynumber].coordinatespan,$("<br>"));
           legends.games.create.players[armynumber].button=$("<button></button>").text("Create and join as Player "+(armynumber+1)).appendTo(legends.games.create.joinspan).click((function(armynumber){
             return function(event){
@@ -1174,6 +1176,7 @@ var legendsconstructor=function(){
         },
         "creategame":function(revealedarmynumber,boardrotations){
           legends.games.status="creating";
+          legends.designarmy.status=false;
           var armycodes=legends.games.create.getarmycodes();
           legends.gamedata.gamename=legends.games.create.gamenameinput.val();
           legends.gamedata.password=legends.games.create.passwordinput.val();
@@ -1223,7 +1226,7 @@ var legendsconstructor=function(){
         var boardrotationdropdownhtml="<select><option value=\"default\">default</option><option value=\"2\">north</option><option value=\"3\">east</option><option value=\"0\">south</option><option value=\"1\">west</option></select>";
         if(legends.games.status=="init"){
           legends.games.status="lobby";
-          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"562px","margin-left":legends.styles.marginsize+"px","margin-bottom":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<ul><li>Left-click on pieces to move them.</li><li>Right-click on pieces to reveal them to your opponents.</li><li>Ctrl+click on pieces to change their allegiance.</li><li>Either drop pieces off the board or middle-click on them to move them to the box.</li></ul><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a game</h2>"));
+          legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"562px","margin-left":legends.styles.marginsize+"px","margin-bottom":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<ul><li>Left-click on pieces to move them.</li><li>Right-click on pieces to reveal them to your opponents.</li><li>Ctrl+click on pieces to change their allegiance.</li><li>Either drop pieces off the board or middle-click on them to move them to the box.</li></ul><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a new game</h2>"));
           legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div).append(document.createTextNode("Game name: "));
           legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">").appendTo(legends.games.create.playerp);
           legends.games.create.playerp.append($("<br>"),document.createTextNode("Password (optional): "));
@@ -1248,10 +1251,11 @@ var legendsconstructor=function(){
           for(var armynumber=0;armynumber<2;armynumber++){
             legends.games.create.addplayer();
           }
-          legends.games.div.append($("<h2>Join a game</h2>"));
+          legends.games.div.append($("<h2>Join an existing game</h2>"));
           legends.games.join.p=$("<p></p>").appendTo(legends.games.div);
-          legends.games.div.append($("<h2>Design an army</h2>"));
-          legends.designarmy.initbutton=$("<button>Show army design tool</button>").appendTo(legends.games.div).click(legends.designarmy.init);
+          legends.designarmy.div=$("<div></div>").appendTo(legends.games.div);
+          legends.designarmy.div.append($("<h2>Design an army</h2>"));
+          legends.designarmy.initbutton=$("<button>Show army design tool</button>").appendTo(legends.designarmy.div).click(legends.designarmy.init);
         }
         if(legends.games.status=="lobby"){
           if(legends.games.create.gamenameinput.val()=="Game "+(legends.games.join.gameslist.length+1)){
@@ -1269,35 +1273,6 @@ var legendsconstructor=function(){
                 legends.games.join.p.append($("<br>"));
               }
               var gameid=legends.games.join.gameslist[gamenumber].gameid;
-              legends.games.join.p.append(document.createTextNode(legends.games.join.gameslist[gamenumber].gamename+": "));
-              for(var armynumber=0;armynumber<=legends.games.join.gameslist[gamenumber].players.length;armynumber++){
-                if(armynumber==legends.games.join.gameslist[gamenumber].players.length){
-                  legends.games.join.gameslist[gamenumber].observerbutton=$("<button>Join as an observer</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
-                    return function(event){
-                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,-1,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(gamenumber));
-                    };
-                  })(gamenumber,gameid));
-                }
-                else{
-                  legends.games.join.gameslist[gamenumber].players[armynumber].button=$("<button></button>").text("Join as "+legends.games.join.gameslist[gamenumber].players[armynumber].playername+" ("+legends.games.join.gameslist[gamenumber].players[armynumber].side+")").appendTo(legends.games.join.p).click((function(gamenumber,gameid,armynumber){
-                    return function(event){
-                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,armynumber,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(gamenumber));
-                    };
-                  })(gamenumber,gameid,armynumber));
-                }
-                legends.games.join.p.append(document.createTextNode(" "));
-              }
-              legends.games.join.p.append(document.createTextNode("facing "));
-              legends.games.join.gameslist[gamenumber].boardrotationdropdown=$(boardrotationdropdownhtml).appendTo(legends.games.join.p);
-              legends.games.join.p.append(document.createTextNode(" / "));
-              legends.games.join.gameslist[gamenumber].deletebutton=$("<button>Delete game</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
-                return function(event){
-                  if(confirm("Are you sure you want to delete this game?")){
-                    legends.socket.emit("deletegame",{"gameid":gameid,"authentication":legends.games.join.gameslist[gamenumber].authentication,"password":legends.games.askforpassword(gamenumber)});
-                  }
-                };
-              })(gamenumber,gameid));
-              legends.games.join.p.append(document.createTextNode(" / "));
               legends.games.join.gameslist[gamenumber].reusebutton=$("<button>Reuse settings</button>").appendTo(legends.games.join.p).click((function(gamenumber){
                 return function(event){
                   if(confirm("This will overwrite all the current settings. Are you sure you want to continue?")){
@@ -1320,6 +1295,34 @@ var legendsconstructor=function(){
                   }
                 };
               })(gamenumber));
+              legends.games.join.p.append(document.createTextNode(" "));
+              legends.games.join.gameslist[gamenumber].deletebutton=$("<button>Delete game</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
+                return function(event){
+                  if(confirm("Are you sure you want to delete this game?")){
+                    legends.socket.emit("deletegame",{"gameid":gameid,"authentication":legends.games.join.gameslist[gamenumber].authentication,"password":legends.games.askforpassword(gamenumber)});
+                  }
+                };
+              })(gamenumber,gameid));
+              legends.games.join.p.append(document.createTextNode(" "+legends.games.join.gameslist[gamenumber].gamename+": "));
+              for(var armynumber=0;armynumber<=legends.games.join.gameslist[gamenumber].players.length;armynumber++){
+                if(armynumber==legends.games.join.gameslist[gamenumber].players.length){
+                  legends.games.join.gameslist[gamenumber].observerbutton=$("<button>Join as an observer</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
+                    return function(event){
+                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,-1,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(gamenumber));
+                    };
+                  })(gamenumber,gameid));
+                }
+                else{
+                  legends.games.join.gameslist[gamenumber].players[armynumber].button=$("<button></button>").text("Join as "+legends.games.join.gameslist[gamenumber].players[armynumber].playername+" ("+legends.games.join.gameslist[gamenumber].players[armynumber].side+")").appendTo(legends.games.join.p).click((function(gamenumber,gameid,armynumber){
+                    return function(event){
+                      legends.games.join.joingame(gameid,legends.games.join.gameslist[gamenumber].authentication,armynumber,legends.games.join.gameslist[gamenumber].boardrotationdropdown.val(),legends.games.askforpassword(gamenumber));
+                    };
+                  })(gamenumber,gameid,armynumber));
+                }
+                legends.games.join.p.append(document.createTextNode(" "));
+              }
+              legends.games.join.p.append(document.createTextNode("facing "));
+              legends.games.join.gameslist[gamenumber].boardrotationdropdown=$(boardrotationdropdownhtml).appendTo(legends.games.join.p);
             }
           }
           if(nogamesavailable){
@@ -1490,17 +1493,20 @@ var legendsconstructor=function(){
       });
 
       legends.socket.on("disconnect",function(message){
-        if(legends.games.div){
+        if(legends.games.status=="lobby"||legends.games.status=="joining"||legends.games.status=="creating"){
+          if(legends.designarmy.status){
+            legends.div.append(legends.designarmy.div);
+            legends.designarmy["good"].usecodebutton.hide();
+            legends.designarmy["evil"].usecodebutton.hide();
+          }
           legends.games.div.empty();
         }
-        if(legends.board.div){
+        else if(legends.games.status=="ingame"){
           legends.board.div.empty();
-        }
-        if(legends.armies.div){
           legends.armies.div.empty();
         }
         legends.alttext.hide();
-        legends.div.append($("<div></div>").append($("<p>Lost connection to server.</p>"),$("<p></p>").append($("<button>Refresh page</button>").click(function(){
+        legends.div.prepend($("<div></div>").append($("<p>Lost connection to server.</p>"),$("<p></p>").append($("<button>Refresh page</button>").click(function(){
           window.location.reload(false);
         }))));
       });
@@ -1508,6 +1514,7 @@ var legendsconstructor=function(){
     },
 
     "designarmy":{
+      "status":false,
       "sides":["good","evil"],
       "presetarmycodes":{
         "good":["28,30,52,58,63,70,73,76,77,81,82,84,85,88,93,7,22,29,37,43,46,49,55,66,74,79,87,91,94,101","28,84,93,66,87,10,40,44,50,53,59,69,80,90,100,63,81,7,19,41,47,56,62,71,78,83,89,92,95,102","10,40,100,92,73,85,88,29,79,13,48,54,60,68,72,83,30,76,82,22,91,36,39,42,45,51,57,64,65,86","52,43,1,5,8,11,14,15,17,20,23,24,32,96,98,58,46,49,55,3,6,9,12,18,21,31,33,61,75,97","5,8,11,14,17,23,32,97,48,54,19,77,2,25,99,20,96,75,39,42,45,51,57,64,80,90,4,16,26,34","25,15,24,98,9,12,18,31,44,50,53,41,62,89,35,99,16,6,21,13,65,86,59,47,56,78,74,27,38,67"],
@@ -1611,14 +1618,15 @@ var legendsconstructor=function(){
         legends.designarmy.updatearmycode(side);
       },
       "init":function(){
+        legends.designarmy.status=true;
         legends.designarmy.specialeightmode=false;
         legends.designarmy.specialfivemode=false;
         legends.designarmy.initbutton.remove();
         for(var i=0;i<2;i++){
           var side=legends.designarmy.sides[i];
-          legends.games.div.append($("<h3>"+side.substr(0,1).toUpperCase()+side.substr(1)+" army</h3>"));
+          legends.designarmy.div.append($("<h3>"+side.substr(0,1).toUpperCase()+side.substr(1)+" army</h3>"));
           legends.designarmy[side]={
-            "table":$("<table></table>").appendTo(legends.games.div),
+            "table":$("<table></table>").appendTo(legends.designarmy.div),
             "rows":[],
             "imagecells":[],
             "boxcell":$("<td rowspan=\""+legends.powers.length+"\"></td>").css({"padding-left":legends.styles.marginsize}),
@@ -1697,6 +1705,18 @@ var legendsconstructor=function(){
               legends.alttext.setextra(legends.designarmy[side].boxpieces[power].divs[number],-1,false);
             }
           }
+          legends.designarmy[side].usecodebutton=$("<button>Use code</button>").click((function(side){
+            return function(event){
+              for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
+                if(legends.games.create.players[armynumber].sidedropdown.val()==side){
+                  if(confirm("This will overwrite the army code for "+legends.games.create.players[armynumber].playernameinput.val()+". Are you sure you want to continue?")){
+                    legends.games.create.players[armynumber].codeinput.val(legends.designarmy[side].armycodetextarea.val());
+                  }
+                  armynumber=legends.games.create.players.length;
+                }
+              }
+            };
+          })(side));
           legends.designarmy[side].boxcell.append(legends.designarmy[side].boxdiv,$("<button>Clear all</button>").click((function(side){
             return function(event){
               if(confirm("Are you sure?")){
@@ -1708,18 +1728,7 @@ var legendsconstructor=function(){
             return function(event){
               legends.designarmy[side].armycodetextarea.select();
             };
-          })(side)),$("<button>Use code</button>").click((function(side){
-            return function(event){
-              for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
-                if(legends.games.create.players[armynumber].sidedropdown.val()==side){
-                  if(confirm("This will overwrite the army code for "+legends.games.create.players[armynumber].playernameinput.val()+". Are you sure you want to continue?")){
-                    legends.games.create.players[armynumber].codeinput.val(legends.designarmy[side].armycodetextarea.val());
-                  }
-                  armynumber=legends.games.create.players.length;
-                }
-              }
-            };
-          })(side)),$("<br>"),legends.designarmy[side].armycodetextarea),legends.designarmy[side].armycodebuttonsp);
+          })(side)),document.createTextNode(" "),legends.designarmy[side].usecodebutton,$("<br>"),legends.designarmy[side].armycodetextarea),legends.designarmy[side].armycodebuttonsp);
           $("<button>Random non-expansion army</button>").appendTo(legends.designarmy[side].armycodebuttonsp).click((function(side){
             return function(event){
               legends.designarmy[side].armycodetextarea.val(legends.designarmy.randomarmycode(side,false));
