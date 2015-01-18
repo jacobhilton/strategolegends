@@ -693,7 +693,7 @@ var legendsconstructor=function(){
       }
       piece.boarddiv.toggle(piece.alive||(piece==legends.dragging.activepiece));
       piece.boarddiv.css({
-        "border-color":(piece.allegiance=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour)
+        "border-color":piece.allegiance=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour
       });
       piece.boarddiv.image.css({
         "opacity":piece.revealed?"1":(legends.gamedata.revealedarmynumber==piece.armynumber||legends.gamedata.revealedarmynumber==-1?legends.styles.pieceopacity+"":"0"),
@@ -822,7 +822,7 @@ var legendsconstructor=function(){
           piece.alive=true;
           piece.deathcurse=false;
           var tile=legends.board.tiles[x][y];
-          if(tile.piecekeys.length==1&&legends.armies[tile.piecekeys[0].armynumber].side!=legends.armies[piece.armynumber].side&&(legends.server.waitforreply?legends.games.status=="server":(sendmessage&&legends.games.status!="server"))){
+          if(tile.piecekeys.length==1&&legends.armies[tile.piecekeys[0].armynumber].pieces[tile.piecekeys[0].power][tile.piecekeys[0].number].allegiance!=legends.armies[piece.armynumber].pieces[piece.power][piece.number].allegiance&&(legends.server.waitforreply?legends.games.status=="server":(sendmessage&&legends.games.status!="server"))){
             legends.reveal(piece.armynumber,piece.power,piece.number,sendmessage);
             for(var i=0;i<tile.piecekeys.length;i++){
               legends.reveal(tile.piecekeys[i].armynumber,tile.piecekeys[i].power,tile.piecekeys[i].number,sendmessage);
@@ -1416,7 +1416,7 @@ var legendsconstructor=function(){
                     "background-color":legends.armies[armynumber].side=="good"?legends.styles.goodcolour:legends.styles.evilcolour,
                     "border-width":legends.styles.bordersize+"px",
                     "border-style":"outset",
-                    "border-color":(piece.allegiance=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour)
+                    "border-color":piece.allegiance=="good"?legends.styles.goodbordercolour:legends.styles.evilbordercolour
                   });
                   piece.boarddiv.image=$("<div></div>").appendTo(piece.boarddiv).css({
                     "position":"absolute",
