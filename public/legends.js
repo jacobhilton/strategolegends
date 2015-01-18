@@ -346,7 +346,7 @@ var legendsconstructor=function(){
       {"name":"Azkaban","power":"*","race":"magic prison","abilities":"<i>Stationary</i>: Cannot move<br><i>Magic</i>: If Azkaban is attacked by a non-muggle human, place the attacker on the first empty water space, going clockwise from the top left. The attacker is now imprisoned and cannot move, perform any actions or use any abilities until they are freed. If all water spaces are full, free the imprisoned piece which first attacked Azkaban by placing it on the last space the attacker occupied and imprison the attacker by placing it on the now empty water space.","side":"good","set":"harrypotter","image":"100.jpg"},
       {"name":"Hogwarts","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move<br><i>Action</i>: Reveal Hogwarts and an adjacent Hogwarts student or teacher to give them +1 until the end of the turn. Use this ability only once per turn.","side":"good","set":"harrypotter","image":"222.jpg"},
       {"name":"Lord Voldemort","power":"10","race":"human","abilities":"<i>Innate</i>: Imperius. If Voldemort attacks a piece with a base strength of 2, 3 or 4, put that piece onto the space from which Voldemort attacked. The attacked piece is now under your control.","side":"evil","set":"harrypotter","image":"138.jpg"},
-      {"name":"Snape","power":"9","race":"Hogwarts teacher and Death Eater","abilities":"<i>Action</i>: Reveal Snape and an adjacent piece to give the adjacent piece +1, lasting from the beginning of the next good turn to the end of the next black turn.<br><i>Action</i>: Reveal Snape to give -1 to an adjacent piece which does not have a base strength of 1, lasting from the beginning of the next good turn to the end of the next black turn.","side":"evil","set":"harrypotter","image":"106.jpg"},
+      {"name":"Snape","power":"9","race":"Hogwarts teacher and Death Eater","abilities":"<i>Action</i>: Reveal Snape and an adjacent piece to give the adjacent piece +1, lasting from the beginning of the next good turn to the end of the next evil turn.<br><i>Action</i>: Reveal Snape to give -1 to an adjacent piece which does not have a base strength of 1, lasting from the beginning of the next good turn to the end of the next evil turn.","side":"evil","set":"harrypotter","image":"106.jpg"},
       {"name":"Dementor","power":"8","race":"dementor","abilities":"<i>Innate</i>: +1 against humans and magical creatures with souls<br><i>Innate</i>: -1 against beasts and magical creatures without souls","side":"evil","set":"harrypotter","image":"143.jpg"},
       {"name":"Lucius Malfoy","power":"8","race":"Death Eater","abilities":"<i>Ability</i>: Reveal Lucius Malfoy and an adjacent Death Eater to give that Death Eater quickness until the end of the turn.","side":"evil","set":"harrypotter","image":"107.jpg"},
       {"name":"Nagini","power":"7","race":"snake","abilities":"<i>Action</i>: Quickness<br><i>Death Curse</i>: -1.5 to the piece which destroyed Nagini","side":"evil","set":"harrypotter","image":"180.jpg"},
@@ -1069,6 +1069,9 @@ var legendsconstructor=function(){
       "join":{
         "gameslist":[],
         "joingame":function(gameid,authentication,revealedarmynumber,boardrotations,password){
+          if(legends.games.status=="lobby"){
+            window.history.pushState(null,"");
+          }
           legends.games.div.empty().html("<p>Joining game...</p>");
           legends.designarmy.status=false;
           legends.games.status="joining";
@@ -1203,6 +1206,7 @@ var legendsconstructor=function(){
             return;
           }
           legends.setboard();
+          window.history.pushState(null,"");
           legends.games.div.empty().html("<p>Creating game...</p>");
           legends.socket.emit("creategame",{"board":legends.board,"armies":legends.armies,"gamename":legends.gamedata.gamename,"password":legends.gamedata.password});
         }
@@ -1218,6 +1222,9 @@ var legendsconstructor=function(){
         legends.games.windowfocused=true;
       });
       window.setInterval(legends.server.ping,600000);
+      window.onpopstate=function(event){
+        window.location.reload(false);
+      };
       legends.games.status="init";
       $(document.body).css({
         "font-family":"sans-serif"
