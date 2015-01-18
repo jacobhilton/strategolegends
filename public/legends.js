@@ -1228,7 +1228,7 @@ var legendsconstructor=function(){
           legends.games.status="lobby";
           legends.games.div=$("<div></div>").appendTo(legends.div).append($("<h1></h1>").css({"text-align":"center"}).append($("<img src=\""+legends.server.imagedirectory+"header.jpg\" alt=\"Stratego Legends\">").css({"width":legends.styles.headerwidth+"px"})),$("<img src=\""+legends.server.imagedirectory+"boxart.jpg\">").css({"float":"right","width":"562px","margin-left":legends.styles.marginsize+"px","margin-bottom":legends.styles.marginsize+"px"}),$("<h2>How to play</h2>"),$("<ul><li>Left-click on pieces to move them.</li><li>Right-click on pieces to reveal them to your opponents.</li><li>Ctrl+click on pieces to change their allegiance.</li><li>Either drop pieces off the board or middle-click on them to move them to the box.</li></ul><p><a href=\"http://www.wizards.com/avalonhill/rules/stratego.pdf\">Official rulebook of Stratego Legends</a></p>"),$("<h2>Create a new game</h2>"));
           legends.games.create.playerp=$("<p></p>").appendTo(legends.games.div).append(document.createTextNode("Game name: "));
-          legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">").appendTo(legends.games.create.playerp);
+          legends.games.create.gamenameinput=$("<input type=\"text\" size=\"20\" value=\"Game 1\">").appendTo(legends.games.create.playerp).css({"font-weight":"bold"});
           legends.games.create.playerp.append($("<br>"),document.createTextNode("Password (optional): "));
           legends.games.create.passwordinput=$("<input type=\"text\" size=\"20\">").appendTo(legends.games.create.playerp);
           legends.games.create.playerp.append($("<br>"));
@@ -1303,7 +1303,7 @@ var legendsconstructor=function(){
                   }
                 };
               })(gamenumber,gameid));
-              legends.games.join.p.append(document.createTextNode(" "+legends.games.join.gameslist[gamenumber].gamename+": "));
+              legends.games.join.p.append(document.createTextNode(" "),$("<b></b>").text(legends.games.join.gameslist[gamenumber].gamename),document.createTextNode(": "));
               for(var armynumber=0;armynumber<=legends.games.join.gameslist[gamenumber].players.length;armynumber++){
                 if(armynumber==legends.games.join.gameslist[gamenumber].players.length){
                   legends.games.join.gameslist[gamenumber].observerbutton=$("<button>Join as an observer</button>").appendTo(legends.games.join.p).click((function(gamenumber,gameid){
