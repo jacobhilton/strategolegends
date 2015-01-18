@@ -214,15 +214,15 @@ var legendsconstructor=function(){
       {"name":"Bone Legion","power":"3","race":"skeleton","abilities":"<i>Innate</i>: Dispel Magic<br><i>Action</i>: Quickness","colour":"red","side":"evil","set":"original","image":"157.jpg"},
       {"name":"Crazed Terror","power":"3","race":"zombie","abilities":"<i>Ability</i>: Reveal and destroy Crazed Terror to give an adjacent Zombie +2 until the end of the turn. Reveal the Zombie piece affected.","colour":"red","side":"evil","set":"original","image":"158.jpg"},
       {"name":"Bloodsucker","power":"2","race":"vampire","abilities":"<i>Ability</i>: Reveal and destroy a piece you control adjacent to Bloodsucker. Add the destroyed piece's current strength to Bloodsucker's current strength. Bloodsucker's increased strength lasts until the end of the turn.","colour":"red","side":"evil","set":"original","image":"159.jpg"},
-      {"name":"Skeleton Warlock","power":"2","race":"skeleton","abilities":"<i>Action</i>: Quickness<br><i>Death Curse</i>: : All Skeleton pieces get +1.","colour":"red","side":"evil","set":"original","image":"160.jpg"},
+      {"name":"Skeleton Warlock","power":"2","race":"skeleton","abilities":"<i>Action</i>: Quickness<br><i>Death Curse</i>: All Skeleton pieces get +1.","colour":"red","side":"evil","set":"original","image":"160.jpg"},
       {"name":"Gloomis","power":"2","race":"zombie","abilities":"<i>Action</i>: Reveal and destroy Gloomis to force your opponent to choose and destroy a piece under his/her control.","colour":"red","side":"evil","set":"original","image":"161.jpg"},
-      {"name":"Wascyo","power":"1","race":"vampire","abilities":"<i>Innate</i>: : If Wascyo attacks or is attacked by a piece with a base strength of 10, the base strength 10 piece is destroyed.","colour":"red","side":"evil","set":"original","image":"162.jpg"},
+      {"name":"Wascyo","power":"1","race":"vampire","abilities":"<i>Innate</i>: If Wascyo attacks or is attacked by a piece with a base strength of 10, the base strength 10 piece is destroyed.","colour":"red","side":"evil","set":"original","image":"162.jpg"},
       {"name":"Jezrak","power":"1","race":"skeleton","abilities":"<i>Innate</i>: If Jezrak attacks a piece with a base strength of 9 or 10, the attacked piece is destroyed.","colour":"red","side":"evil","set":"original","image":"163.jpg"},
-      {"name":"Zombie Grave","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: : If Zombie Grave is attacked, destroy it and its attacker. Replace Zombie Grave with any destroyed Zombie under your control. (The destroyed Zombie piece has been brought back to life.)","colour":"red","side":"evil","set":"original","image":"164.jpg"},
+      {"name":"Zombie Grave","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Zombie Grave is attacked, destroy it and its attacker. Replace Zombie Grave with any destroyed Zombie under your control. (The destroyed Zombie piece has been brought back to life.)","colour":"red","side":"evil","set":"original","image":"164.jpg"},
       {"name":"Skeleton Grave","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Skeleton Grave is attacked, destroy it and its attacker. Replace Skeleton Grave with any destroyed Skeleton. The destroyed Skeleton piece has been brought back to life.","colour":"red","side":"evil","set":"original","image":"165.jpg"},
-      {"name":"Decay","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: : Reveal and destroy Decay to destroy all adjacent pieces.<br><i>Magic</i>: : If Decay is attacked, destroy it and its attacker.","colour":"red","side":"evil","set":"original","image":"166.jpg"},
+      {"name":"Decay","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Action</i>: Reveal and destroy Decay to destroy all adjacent pieces.<br><i>Magic</i>: If Decay is attacked, destroy it and its attacker.","colour":"red","side":"evil","set":"original","image":"166.jpg"},
       {"name":"Skull of Gorion","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Skull of Gorion is attacked, destroy it and its attacker. If the attacker is a Gold piece, you may destroy any piece on a marsh space.","colour":"red","side":"evil","set":"original","image":"167.jpg"},
-      {"name":"Fire Wall","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: : Reveal and destroy Fire Wall to reveal an opponent's piece adjacent to Fire Wall. That piece gets -2 until the end of the turn.<br><i>Magic</i>: : If Fire Wall is attacked, destroy it and its attacker.","colour":"red","side":"evil","set":"original","image":"168.jpg"},
+      {"name":"Fire Wall","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal and destroy Fire Wall to reveal an opponent's piece adjacent to Fire Wall. That piece gets -2 until the end of the turn.<br><i>Magic</i>: If Fire Wall is attacked, destroy it and its attacker.","colour":"red","side":"evil","set":"original","image":"168.jpg"},
       {"name":"Rancid Castle","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal Rancid Castle to give an adjacent Red piece +1 until the end of the turn. Use this ability only once per turn. Reveal the Red piece affected.","colour":"red","side":"evil","set":"original","image":"169.jpg"},
       {"name":"Bone Castle","power":"C","race":"castle","abilities":"<i>Stationary</i>: Cannot move.<br><i>Ability</i>: Reveal to give an adjacent Skeleton Slashing Action until the end of the turn.","colour":"red","side":"evil","set":"original","image":"170.jpg"},
       {"name":"Bremmuk","power":"10","race":"mold","abilities":"<i>Death Curse</i>: When this Death Curse ends, take any number of destroyed Mold pieces (with a total base strength value not exceeding 8) and place them on any empty forest spaces. (These Mold pieces have been brought back to life.)","colour":"purple","side":"evil","set":"original","image":"171.jpg"},
@@ -1151,6 +1151,11 @@ var legendsconstructor=function(){
           })(armynumber));
           legends.games.create.joinspan.append(document.createTextNode(" "));
         },
+        "removeplayers":function(){
+          legends.games.create.players.splice(0,legends.games.create.players.length);
+          legends.games.create.joinspan.empty();
+          legends.games.create.playerspan.empty();
+        },
         "validatecoordinates":function(coordinates){
           var bijection=function(x,y){return (((x+y)*(x+y+1))/2)+y;}
           var numbers=[];
@@ -1276,9 +1281,7 @@ var legendsconstructor=function(){
               legends.games.join.gameslist[gamenumber].reusebutton=$("<button>Reuse settings</button>").appendTo(legends.games.join.p).click((function(gamenumber){
                 return function(event){
                   if(confirm("This will overwrite all the current settings. Are you sure you want to continue?")){
-                    legends.games.create.players.splice(0,legends.games.create.players.length);
-                    legends.games.create.joinspan.empty();
-                    legends.games.create.playerspan.empty();
+                    legends.games.create.removeplayers();
                     for(var armynumber=0;armynumber<legends.games.join.gameslist[gamenumber].players.length;armynumber++){
                       legends.games.create.addplayer();
                       legends.games.create.players[armynumber].playernameinput.val(legends.games.join.gameslist[gamenumber].players[armynumber].playername);
