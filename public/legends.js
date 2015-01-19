@@ -1276,7 +1276,7 @@ var legendsconstructor=function(){
           legends.games.join.p.empty();
           legends.games.join.gameslist=gameslist;
           var nogamesavailable=true;
-          for(var gamenumber=0;gamenumber<legends.games.join.gameslist.length;gamenumber++){
+          for(var gamenumber=legends.games.join.gameslist.length-1;gamenumber>=0;gamenumber--){
             if(legends.games.join.gameslist[gamenumber]){
               if(nogamesavailable){
                 nogamesavailable=false;
