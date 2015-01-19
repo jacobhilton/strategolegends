@@ -117,7 +117,7 @@ var legendsconstructor=function(){
       {"name":"Psychic Devourer","power":"1","race":"wizard","abilities":"<i>Innate</i>: If Psychic Devourer attacks, guess the name of the defending piece. If you are correct, that piece and Psychic Devourer are destroyed. If you are wrong, destroy Psychic Devourer.","colour":"gold","side":"good","set":"original","image":"60.jpg"},
       {"name":"Reb the Zombie Slayer","power":"1","race":"cleric","abilities":"<i>Innate</i>: If Reb attacks a piece with a base strength of 10, that piece is destroyed.<br><i>Innate</i>: If Reb attacks any Zombie, destroy that Zombie.","colour":"gold","side":"good","set":"original","image":"61.jpg"},
       {"name":"Holy Light","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannot attack<br><i>Magic</i>: If Holy Light is attacked, destroy it and its attacker.","colour":"gold","side":"good","set":"original","image":"62.jpg"},
-      {"name":"Holy Vision","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannont attack<br><i>Magic</i>: If Holy vision is attacked, it is destroyed and you may look at any 2 pieces.","colour":"gold","side":"good","set":"original","image":"63.jpg"},
+      {"name":"Holy Vision","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannot attack<br><i>Magic</i>: If Holy vision is attacked, it is destroyed and you may look at any 2 pieces.","colour":"gold","side":"good","set":"original","image":"63.jpg"},
       {"name":"Exorcism","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Exorcim is attacked, destroy it and its attacker. Then you may reveal any one opponent's piece on any marsh space. If the revealed piece is red, it is destroyed.","colour":"gold","side":"good","set":"original","image":"64.jpg"},
       {"name":"Alter of Deliverance","power":"*","race":"magic","abilities":"<i>Stationary</i>: Cannot move.<br><i>Magic</i>: If Alter of Deliverance is attacked, destroy it and its attacker. Then force an oppenent to choose and destroy one piece under his/her control.","colour":"gold","side":"good","set":"original","image":"65.jpg"},
       {"name":"Cleansing Mist","power":"*","race":"magic","abilities":"<i>Innate</i>: Cannot Attack<br><i>Action</i>: Reveal and destroy Cleansing Mist to force an opponent to choose and destroy any piece under his/her control.<br><i>Magic</i>: If Cleansing Mist is attacked, destroy it and its attacker.","colour":"gold","side":"good","set":"original","image":"66.jpg"},
@@ -126,7 +126,7 @@ var legendsconstructor=function(){
       {"name":"Uaivad","power":"10","race":"dragon","abilities":"<i>Action</i>: Flying<br><i>Death Curse</i>: All Dragons get +1.","colour":"blue","side":"good","set":"original","image":"69.jpg"},
       {"name":"Elementus the Airlord","power":"10","race":"spirit","abilities":"<i>Ability</i>: Reveal Elementus to give any spirit Flying Action until the end of the turn.","colour":"blue","side":"good","set":"original","image":"70.jpg"},
       {"name":"Electibra","power":"9","race":"dragon","abilities":"<i>Action</i>: Flying<br><i>Death Curse</i>: All pieces with Flying Action get +1.","colour":"blue","side":"good","set":"original","image":"71.jpg"},
-      {"name":"Almaetis","power":"9","race":"spirit","abilities":"<i>Ability</i>: Reveal and destroy Almaetis to place any piece you control on any empty forest space. Reveal the placed piece.","colour":"blue","side":"good","set":"original","image":"72.jpg"},
+      {"name":"Almaetis","power":"9","race":"spirit","abilities":"<i>Action</i>: Reveal and destroy Almaetis to place any piece you control on any empty forest space. Reveal the placed piece.","colour":"blue","side":"good","set":"original","image":"72.jpg"},
       {"name":"Dagin Genie","power":"8","race":"spirit","abilities":"<i>Innate</i>: +1 on desert spaces.","colour":"blue","side":"good","set":"original","image":"73.jpg"},
       {"name":"Aras","power":"8","race":"angel","abilities":"<i>Action</i>: Vision<br><i>Action</i>: Flying","colour":"blue","side":"good","set":"original","image":"74.jpg"},
       {"name":"Tael","power":"8","race":"chimera","abilities":"<i>Innate</i>: +1 on mountain spaces.<br><i>Action</i>: Flying","colour":"blue","side":"good","set":"original","image":"75.jpg"},
@@ -1395,15 +1395,25 @@ var legendsconstructor=function(){
           };
           $("<h2></h2>").text(legends.gamedata.gamename).appendTo(legends.armies.div).css(headercss);
           for(var armynumber=reverseorder?legends.armies.length-1:0;reverseorder?(armynumber>=0):(armynumber<legends.armies.length);armynumber+=reverseorder?-1:1){
-            legends.armies[armynumber].playernamespan=$("<span></span>").text(legends.armies[armynumber].playername).css({
+            legends.armies[armynumber].playernamespan=$("<span></span>").text(legends.armies[armynumber].playername+"'s army ("+legends.armies[armynumber].side+")").css({
               "cursor":"pointer",
               "background-color":legends.armies[armynumber].playernamehighlighted?legends.styles.playernamehighlightcolour:"transparent"
-            }).click((function(armynumber){
+            }).mousedown((function(armynumber){
               return function(event){
-                legends.togglehighlightplayername(armynumber,true,true,true);
+                var armynumbertohighlight=armynumber;
+                var toggle=true;
+                if(event.which==3){
+                  armynumbertohighlight=Math.floor(Math.random()*legends.armies.length);
+                  toggle=false;
+                }
+                for(var otherarmynumber=0;otherarmynumber<legends.armies.length;otherarmynumber++){
+                  legends.togglehighlightplayername(otherarmynumber,otherarmynumber==armynumbertohighlight&&toggle,otherarmynumber==armynumbertohighlight,true);
+                }
               };
-            })(armynumber));
-            $("<div></div>").append(legends.armies[armynumber].playernamespan,document.createTextNode("'s army ("+legends.armies[armynumber].side+")")).appendTo(legends.armies.div).css(headercss);
+            })(armynumber)).on("contextmenu",function(event){
+              event.preventDefault();
+            });;
+            $("<div></div>").append(legends.armies[armynumber].playernamespan).appendTo(legends.armies.div).css(headercss);
             legends.armies[armynumber].div=$("<div></div>").appendTo(legends.armies.div).css({
               "position":"relative",
               "width":(legends.styles.armypiecewidth*6)+"px",
