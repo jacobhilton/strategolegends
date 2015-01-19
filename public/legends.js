@@ -1245,13 +1245,13 @@ var legendsconstructor=function(){
           legends.games.create.passwordinput=$("<input type=\"text\" size=\"20\">").appendTo(legends.games.create.playerp);
           legends.games.create.playerp.append($("<br>"));
           legends.games.create.playerspan=$("<span></span>").appendTo(legends.games.create.playerp);
-          legends.games.create.playerp.append($("<button>Add a player</button>").click(legends.games.create.addplayer),document.createTextNode(" "),$("<button>Shuffle player names</button>").click(legends.games.create.shuffleplayernames));
-          legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append(document.createTextNode(" "),$("<button>Edit layout and terrain</button>").click(function(event){
+          legends.games.create.playerp.append($("<button>Add a player</button>").click(legends.games.create.addplayer),document.createTextNode(" "),$("<button>Shuffle player names</button>").click(legends.games.create.shuffleplayernames),document.createTextNode(" "));
+          legends.games.create.editcoordinatespan=$("<span></span>").appendTo(legends.games.create.playerp).append($("<button>Edit layout and terrain</button>").click(function(event){
             legends.games.create.showingcoordinates=true;
             for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
               legends.games.create.players[armynumber].coordinatespan.show();
             }
-            legends.games.create.editcoordinatespan.hide();
+            legends.games.create.editcoordinatespan.empty().append($("<a href=\"http://boardgamegeek.com/filepage/94683/stratego-legends-board-checklist\">Official terrain layouts</a>"));
           }));
           legends.games.create.joinp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.joinspan=$("<span></span>").appendTo(legends.games.create.joinp);
