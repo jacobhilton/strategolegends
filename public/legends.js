@@ -1251,7 +1251,7 @@ var legendsconstructor=function(){
             for(var armynumber=0;armynumber<legends.games.create.players.length;armynumber++){
               legends.games.create.players[armynumber].coordinatespan.show();
             }
-            legends.games.create.editcoordinatespan.empty().append($("<a href=\"http://boardgamegeek.com/filepage/94683/stratego-legends-board-checklist\" target=\"_blank\">Official terrain layouts</a>"));
+            legends.games.create.editcoordinatespan.empty().append($("<a href=\"Stratego_Checklist_Terrain_Boards.pdf\" target=\"_blank\">Official terrain layouts</a>"));
           }));
           legends.games.create.joinp=$("<p></p>").appendTo(legends.games.div);
           legends.games.create.joinspan=$("<span></span>").appendTo(legends.games.create.joinp);
