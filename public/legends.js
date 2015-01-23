@@ -1794,7 +1794,7 @@ var legendsconstructor=function(){
           })(side));
         }
         legends.designarmy.div.append($("<h3>Official reference charts</h3>"));
-        $("<p></p>").append("<a href=\"official/good.jpg\">Good original</a>").append("<a href=\"official/evil.jpg\">Evil original</a>").append("<a href=\"official/goodexpansion.jpg\">Good expansion</a>").append("<a href=\"official/evilexpansion.jpg\">Evil expansion</a>").appendTo(legends.designarmy.div);
+        $("<p></p>").append("<a href=\"official/good.jpg\">Good original</a>",$("<br>"),"<a href=\"official/evil.jpg\">Evil original</a>",$("<br>"),"<a href=\"official/goodexpansion.jpg\">Good expansion</a>",$("<br>"),"<a href=\"official/evilexpansion.jpg\">Evil expansion</a>").appendTo(legends.designarmy.div);
       }
     }
 
