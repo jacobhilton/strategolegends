@@ -77,17 +77,21 @@ pg.connect(databaseurl,function(err,client,done){
     http.listen(process.env.PORT||5000);
   });
 });
+var datatosave=function(){
+  var data=[];
+  for(var gamenumber=0;gamenumber<games.length;gamenumber++){
+    if(games[gamenumber]){
+      data[gamenumber]={"armies":games[gamenumber].armies,"board":games[gamenumber].board,"gamedata":games[gamenumber].gamedata};
+    }
+    else{
+      data[gamenumber]=false;
+    }
+  }
+  return data;
+};
 var savegames=function(){
   pg.connect(databaseurl,function(err,client,done){
-    var data=[];
-    for(var gamenumber=0;gamenumber<games.length;gamenumber++){
-      if(games[gamenumber]){
-        data[gamenumber]={"armies":games[gamenumber].armies,"board":games[gamenumber].board,"gamedata":games[gamenumber].gamedata};
-      }
-      else{
-        data[gamenumber]=false;
-      }
-    }
+    var data=datatosave();
     client.query(escape("UPDATE data SET value=%L WHERE type='strategolegends'",JSON.stringify(data)),function(err,result){
       done();
     });
@@ -204,5 +208,10 @@ io.on("connection",function(socket){
   });
   socket.on("disconnect",function(){
     savegames();
+  });
+  socket.on("saveandbackup",function(){
+    savegames();
+    var data=datatosave();
+    socket.emit("consolemessage",JSON.stringify(data));
   });
 });

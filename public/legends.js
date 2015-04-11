@@ -1533,6 +1533,10 @@ var legendsconstructor=function(){
         window.location.reload(false);
       });
 
+      legends.socket.on("consolemessage",function(message){
+        console.log(message);
+      });
+
       legends.socket.on("disconnect",function(message){
         if(legends.games.status=="lobby"||legends.games.status=="joining"||legends.games.status=="creating"){
           if(legends.designarmy.status){
@@ -1815,7 +1819,7 @@ var legendsconstructor=function(){
           })(side));
         }
         legends.designarmy.div.append($("<h3>Official reference charts</h3>"));
-        $("<p></p>").append("<a href=\"official/good.jpg\">Good original</a>",$("<br>"),"<a href=\"official/evil.jpg\">Evil original</a>",$("<br>"),"<a href=\"official/goodexpansion.jpg\">Good expansion</a>",$("<br>"),"<a href=\"official/evilexpansion.jpg\">Evil expansion</a>").appendTo(legends.designarmy.div);
+        $("<p></p>").append("<a href=\"official/good.jpg\" target=\"_blank\">Good original</a>",$("<br>"),"<a href=\"official/evil.jpg\" target=\"_blank\">Evil original</a>",$("<br>"),"<a href=\"official/goodexpansion.jpg\" target=\"_blank\">Good expansion</a>",$("<br>"),"<a href=\"official/evilexpansion.jpg\" target=\"_blank\">Evil expansion</a>").appendTo(legends.designarmy.div);
       }
     }
 
