@@ -45,6 +45,12 @@ var pg=require("pg");
 var escape=require("pg-escape");
 var databaseurl=process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres";
 pg.connect(databaseurl,function(err,client,done){
+  if(err){
+    console.log(err);
+    savegames=function(){};
+    http.listen(process.env.PORT||5000);
+    return;
+  }
   client.query("SELECT value FROM data WHERE type='strategolegends'",function(err,result){
     done();
     if(err){
