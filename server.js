@@ -43,7 +43,7 @@ var savegames=function(){
 }*/
 var pg=require("pg");
 var escape=require("pg-escape");
-var databaseurl=process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres";
+var databaseurl=(process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres")+"?ssl=true";
 pg.connect(databaseurl,function(err,client,done){
   if(err){
     console.log(err);
