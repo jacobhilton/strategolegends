@@ -49,7 +49,7 @@ var pg_connect=function(databaseurl,callback){
     ssl:{rejectUnauthorized:false}
   });
   client.connect();
-  callback(null,client,client.end);
+  callback(null,client,client.end.bind(client));
 };
 pg_connect(databaseurl,function(err,client,done){
   if(err){
