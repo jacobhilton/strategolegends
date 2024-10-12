@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "express": "^4.10.7",
-    "pg": "^4.1.1",
+    "pg": "^8.7.1",
     "pg-escape": "0.0.3",
     "socket.io": "^1.2.1"
   }
