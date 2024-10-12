@@ -10,7 +10,7 @@
     "url": ""
   },
   "engines": {
-    "node": "16.14.0"
+    "node": "18.20.4"
   },
   "dependencies": {
     "express": "^4.21.0",

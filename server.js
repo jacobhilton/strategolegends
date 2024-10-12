@@ -42,7 +42,7 @@ var savegames=function(){
   fs.writeFile(savefile,JSON.stringify(data));
 }*/
 var pg=require("pg");
-var databaseurl=(process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres")+"?ssl=true";
+var databaseurl=(process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres");
 var pg_connect=function(databaseurl,callback){
   var client=new pg.Client({
     connectionString:databaseurl,
