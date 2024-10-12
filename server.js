@@ -42,9 +42,16 @@ var savegames=function(){
   fs.writeFile(savefile,JSON.stringify(data));
 }*/
 var pg=require("pg");
-var escape=require("pg-escape");
 var databaseurl=(process.env.DATABASE_URL||"postgres://postgres:password@localhost:5432/postgres")+"?ssl=true";
-pg.connect(databaseurl,function(err,client,done){
+var pg_connect=function(databaseurl,callback){
+  var client=pg.Client({
+    connectionString:databaseurl,
+    ssl:{rejectUnauthorized:false}
+  });
+  client.connect();
+  callback(null,client,client.end);
+};
+pg_connect(databaseurl,function(err,client,done){
   if(err){
     console.log(err);
     savegames=function(){};
@@ -96,9 +103,9 @@ var datatosave=function(){
   return data;
 };
 var savegames=function(){
-  pg.connect(databaseurl,function(err,client,done){
+  pg_connect(databaseurl,function(err,client,done){
     var data=datatosave();
-    client.query(escape("UPDATE data SET value=%L WHERE type='strategolegends'",JSON.stringify(data)),function(err,result){
+    client.query("UPDATE data SET value=$1 WHERE type='strategolegends'",[JSON.stringify(data)],function(err,result){
       done();
     });
   });
