@@ -48,12 +48,16 @@ var pg_connect=function(databaseurl,callback){
     connectionString:databaseurl,
     ssl:{rejectUnauthorized:false}
   });
-  client.connect();
-  callback(null,client,client.end.bind(client));
+  client.on("error",function(err){
+    console.error("[pg] client error:",err);
+  });
+  client.connect(function(err){
+    callback(err,client,client.end.bind(client));
+  });
 };
 pg_connect(databaseurl,function(err,client,done){
   if(err){
-    console.log(err);
+    console.error("[startup] failed to connect to database, saving disabled for this dyno:",err);
     savegames=function(){};
     http.listen(process.env.PORT||5000);
     return;
@@ -61,10 +65,12 @@ pg_connect(databaseurl,function(err,client,done){
   client.query("SELECT value FROM data WHERE type='strategolegends'",function(err,result){
     done();
     if(err){
+      console.error("[startup] failed to load saved games, saving disabled for this dyno:",err);
       savegames=function(){};
     }
     else if(result.rows.length==0){
-      savegames();
+      console.error("[startup] no saved-games row found in database, saving disabled for this dyno");
+      savegames=function(){};
     }
     else{
       try{
@@ -84,7 +90,8 @@ pg_connect(databaseurl,function(err,client,done){
         }
       }
       catch(error){
-        savegames();
+        console.error("[startup] failed to parse saved games, saving disabled for this dyno:",error);
+        savegames=function(){};
       }
     }
     http.listen(process.env.PORT||5000);
@@ -104,13 +111,24 @@ var datatosave=function(){
 };
 var savegames=function(){
   pg_connect(databaseurl,function(err,client,done){
+    if(err){
+      console.error("[save] failed to connect to database:",err);
+      done();
+      return;
+    }
     var data=datatosave();
     client.query("UPDATE data SET value=$1 WHERE type='strategolegends'",[JSON.stringify(data)],function(err,result){
+      if(err){
+        console.error("[save] failed to save games:",err);
+      }
+      else if(result.rowCount===0){
+        console.error("[save] save affected 0 rows, no matching row in database");
+      }
       done();
     });
   });
 };
-setInterval(savegames,600000);
+setInterval(function(){savegames();},600000);
 var emitgameslist=function(socket){
   socket.emit("gameslist",(function(){
     var returnvalue=[];

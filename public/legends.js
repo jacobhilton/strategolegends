@@ -1300,6 +1300,7 @@ var legendsconstructor=function(){
             if(legends.games.join.gameslist[gamenumber]){
               if(nogamesavailable){
                 nogamesavailable=false;
+                legends.games.join.p.append($("<b>Note</b>: There have recently been data loss issues, for which I apologize. I have fixed a bug that may have been causing this, but it is possible that there will continue to be issues.<br><br>"))
               }
               else{
                 legends.games.join.p.append($("<br>"));
@@ -1356,7 +1357,7 @@ var legendsconstructor=function(){
             }
           }
           if(nogamesavailable){
-            legends.games.join.p.html("No games available.");
+            legends.games.join.p.html("Failed to load existing games.<br><br><b>Warning</b>: New games or changes to existing games may be lost.");
           }
         }
       });
