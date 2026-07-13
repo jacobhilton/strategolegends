@@ -1357,7 +1357,7 @@ var legendsconstructor=function(){
             }
           }
           if(nogamesavailable){
-            legends.games.join.p.html("Failed to load existing games.<br><br><b>Warning</b>: New games or changes to existing games may be lost.");
+            legends.games.join.p.html("Failed to load existing games. This should be a temporary issue, please try again later.<br><br><b>Warning</b>: If you create a new game, it may be lost when this issue resolves.");
           }
         }
       });
